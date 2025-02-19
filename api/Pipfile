@@ -5,10 +5,10 @@ name = "pypi"
 
 [packages]
 flask = "*"
-flask-sqlalchemy = "*"
+flask-admin = {extras = ["s3", "export", "sqlalchemy", "translation", "images"], version = "*"}
 flask-cors = "*"
-flask-admin = {extras = ["s3", "sqlalchemy", "translation", "images", "export"], version = "*"}
 flask-migrate = "*"
+flask-sqlalchemy = "*"
 
 [dev-packages]
 
