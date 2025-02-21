@@ -9,6 +9,9 @@ flask-admin = {extras = ["s3", "export", "sqlalchemy", "translation", "images"],
 flask-cors = "*"
 flask-migrate = "*"
 flask-sqlalchemy = "*"
+psycopg2 = "*"
+bcrypt = "*"
+flask-jwt-extended = "*"
 
 [dev-packages]
 
@@ -17,3 +20,6 @@ python_version = "3.12"
 
 [scripts]
 start="flask --app src/app run"
+init="flask --app src/app db init"
+migrate="flask --app src/app db migrate"
+upgrade="flask --app src/app db upgrade"
