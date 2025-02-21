@@ -1,9 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NavBar from './components/NavBar';
 import routerConfig from "./routing/routerConfig";
+import { useState } from "react";
+
 
 
 function App() {
+  const [filters, setFilters] = useState({});
+
   return (
     <Router>
       <NavBar />
