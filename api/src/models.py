@@ -19,7 +19,20 @@ class User(db.Model):
     address: str = db.Column(db.String(100), nullable=True)
     phone_number: str = db.Column(db.String(20), nullable=True)
     photo: str = db.Column(db.String(200), nullable=True)
-    favourite_list: int = db.Column(db.Integer, ForeignKey('favourite.id'))
+
+class FavoriteTypeEnum(str, Enum):
+    Hotels= "Hotel"
+    Flys= "Fly"
+    Excursions= "Excursion"
+    Cars = "Car"
+
+@dataclass
+class Company(db.Model):
+    __tablename__ = 'company'
+    id: int = db.Column(db.Integer, primary_key=True)
+    name: str= db.Column(db.String(50), nullable=False)
+    admin:int=db.Column(db.Integer, ForeignKey("user.id"))
+    #do type of product
 
 @dataclass
 class Favourite(db.Model):
