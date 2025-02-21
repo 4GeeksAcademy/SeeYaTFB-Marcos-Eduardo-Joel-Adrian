@@ -1,0 +1,18 @@
+2025-02-20 18:48:51 alembic.runtime.migration INFO Context impl SQLiteImpl.
+2025-02-20 18:48:51 alembic.runtime.migration INFO Will assume non-transactional DDL.
+2025-02-20 18:49:10 alembic.runtime.migration INFO Context impl SQLiteImpl.
+2025-02-20 18:49:10 alembic.runtime.migration INFO Will assume non-transactional DDL.
+2025-02-21 17:42:03 alembic.runtime.migration INFO Context impl SQLiteImpl.
+2025-02-21 17:42:03 alembic.runtime.migration INFO Will assume non-transactional DDL.
+2025-02-21 17:42:03 alembic.autogenerate.compare INFO Detected added table 'country'
+2025-02-21 17:42:03 alembic.autogenerate.compare INFO Detected added table 'favourite'
+2025-02-21 17:42:03 alembic.autogenerate.compare INFO Detected added table 'user'
+2025-02-21 17:42:03 alembic.autogenerate.compare INFO Detected added table 'city'
+2025-02-21 17:42:03 alembic.autogenerate.compare INFO Detected added table 'follower'
+2025-02-21 17:42:03 alembic.autogenerate.compare INFO Detected added table 'coches'
+2025-02-21 17:42:03 alembic.autogenerate.compare INFO Detected added table 'excursiones'
+2025-02-21 17:42:03 alembic.autogenerate.compare INFO Detected added table 'hoteles'
+2025-02-21 17:42:03 alembic.autogenerate.compare INFO Detected added table 'vuelos'
+2025-02-21 17:42:14 alembic.runtime.migration INFO Context impl SQLiteImpl.
+2025-02-21 17:42:14 alembic.runtime.migration INFO Will assume non-transactional DDL.
+2025-02-21 17:42:14 alembic.runtime.migration INFO Running upgrade  -> e7d1b51a4a38, empty message

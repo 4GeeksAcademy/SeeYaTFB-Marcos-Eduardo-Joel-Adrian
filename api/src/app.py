@@ -4,15 +4,32 @@ import time
 from flask import Flask, jsonify
 from models import db, User, Favourite, City, Country, Hoteles, Vuelos, Excursiones, Coches
 from flask import Flask, request, jsonify
+from flask_migrate import Migrate
+from werkzeug.security import generate_password_hash
+from flask_jwt_extended import create_access_token, get_csrf_token, jwt_required, JWTManager, set_access_cookies, unset_jwt_cookies, get_jwt_identity
+from sqlalchemy import or_
+import bcrypt
 
 app = Flask(__name__)
 start_time = time.time()
 
+app.config["JWT_SECRET_KEY"] = ("super-secret")
+app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
+app.config["JWT_COOKIE_CSRF_PROTECT"] = True
+app.config["JWT_CSRF_IN_COOKIES"] = True
+app.config["JWT_COOKIE_SECURE"] = True 
+
+jwt = JWTManager(app)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////tmp/test.db"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+MIGRATE = Migrate(app, db)
+db.init_app(app)
 
 @app.route("/health", methods=["GET"])
 def health_check():
     return jsonify({"status": "ok", "uptime": round(time.time() - start_time, 2)}), 200
-
 
 @app.route('/users', methods=['GET'])
 def get_users():
@@ -25,6 +42,210 @@ def get_single_user(user_id):
     if not user:
         return jsonify({"error": "User not found"}), 404
     return jsonify(user), 200
+
+@app.route("/register", methods=["POST"])
+def register():
+    data = request.get_json()
+    
+    username = data.get("username")
+    email = data.get("email")
+    password = data.get("password")
+    first_name = data.get("first_name")
+    last_name = data.get("last_name")
+    country = data.get("country")
+    city = data.get("city")
+    address = data.get("address")
+    phone_number = data.get("phone_number")
+    photo = data.get("photo")
+    
+    existing_user = db.session.query(User).filter(or_(User.username == username, User.email == email)).first()
+    if existing_user:
+        return jsonify({"error": "Username or Email already registered"}), 400
+
+    hashedPassword = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+    new_user = User(username=username,email=email,password=hashedPassword,first_name=first_name,last_name=last_name,country=country,city=city,address=address,phone_number=phone_number,photo=photo)
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify({"message": "User registered successfully"}), 201
+
+@app.route("/login", methods=["POST"])
+def get_login():
+    data = request.get_json()
+
+    email = data["email"]
+    password = data["password"]
+
+    required_fields = ["email", "password"]
+    if not all(field in data for field in required_fields):
+        return jsonify({"error": "Missing required fields"}), 400
+
+    user1 = User.query.filter_by(email=email).first()
+    if not user1:
+        return jsonify({"error": "User not found"}), 400
+
+    is_password_valid = bcrypt.checkpw(password.encode('utf-8'), user1.password.encode('utf-8'))
+
+    if not is_password_valid:
+        return jsonify({"error": "Password not correct"}), 400
+
+    access_token = create_access_token(identity=str(user1.id))
+    csrf_token = get_csrf_token(access_token)
+    response = jsonify({
+        "msg": "login successful",
+        "user": user1,
+        "csrf_token": csrf_token
+        })
+    set_access_cookies(response, access_token)
+
+    return response
+
+@app.route("/logout", methods=["POST"])
+@jwt_required()
+def logout_with_cookies():
+    response = jsonify({"msg": "logout successful"})
+    unset_jwt_cookies(response)
+    return response
+
+@app.route("/hotels", methods=["POST"])
+def create_hotel():
+    data = request.get_json()
+   
+    new_hotel = Hoteles(
+            name=data['name'],
+            adress=data['adress'],
+            city=data['city'],
+            country=data['country'],
+            cost=data['cost'],
+            stars=data['stars'],
+            check_in=data['check_in'],
+            check_out=data['check_out'],
+            pension=data['pension'],
+            available=data['available'],
+            parking=data['parking'],
+            wifi=data['wifi'],
+            pets=data['pets'],
+            pool=data['pool'],
+            sports=data['sports'],
+            events=data['events']
+        )
+    db.session.add(new_hotel)
+    db.session.commit()
+    return jsonify({'message': 'Hotel created', 'hotel_id': new_hotel.id}), 201
+
+@app.route("/flight", methods=["POST"])
+def create_flight():
+    data = request.get_json()
+   
+    new_flight = Vuelos(
+            company=data['company'],
+            punctuation=data['punctuation'],
+            duration=data['duration'],
+            land=data['land'],
+            take_off=data['take_off'],
+            origin_city=data['origin_city'],
+            destiny_city=data['destiny_city'],
+            cost=data['cost'],
+            flight_type=data['flight_type'],
+            available=data['available'],
+            wifi=data['wifi'],
+            pets=data['pets'],
+            baggage=data['baggage'],
+            baggage_kg=data['baggage_kg'],
+            lunch=data['lunch'],
+            time_departure=data['time_departure'],
+            time_arrival=data['time_arrival']
+        )
+    db.session.add(new_flight)
+    db.session.commit()
+    return jsonify({'message': 'Flight created'}), 201
+
+@app.route("/car", methods=["POST"])
+def create_car():
+    data = request.get_json()
+   
+    new_car = Coches(
+            company=data['company'],
+            brand=data['brand'],
+            city=data['city'],
+            country=data['country'],
+            cost=data['cost'],
+            available=data['available'],
+            km_limit_day=data['km_limit_day'],
+            duration=data['duration'],
+            car_type=data['car_type'],
+            max_passengers=data['max_passengers'],
+            fuel_type=data['fuel_type'],
+            total_km=data['total_km'],
+            automatic=data['automatic'],
+            photo=data['photo'],
+            doors=data['doors'],
+            airport_take=data['airport_take'],
+            air_conditioning=data['air_conditioning'],
+            punctuation=data['punctuation'],
+            guarantee=data['guarantee'],
+            insurance=data['insurance'],
+            info=data['info']
+        )
+    db.session.add(new_car)
+    db.session.commit()
+    return jsonify({'message': 'Car created'}), 201
+
+@app.route("/city", methods=["POST"])
+def create_city():
+    data = request.get_json()
+   
+    new_city = City(
+            country_id=data['country_id'],
+            population=data['population'],
+            weather=data['weather'],
+            info=data['info']
+        )
+    db.session.add(new_city)
+    db.session.commit()
+    return jsonify({'message': 'City created'}), 201
+
+@app.route("/country", methods=["POST"])
+def create_country():
+    data = request.get_json()
+   
+    new_country = Country(
+            population=data['population'],
+            weather=data['weather'],
+            currency=data['currency'],
+            info=data['info']
+        )
+    db.session.add(new_country)
+    db.session.commit()
+    return jsonify({'message': 'Country created'}), 201
+
+@app.route("/excursion", methods=["POST"])
+def create_excursion():
+    data = request.get_json()
+   
+    new_excursion = Excursiones(
+            company=data['company'],
+            duration=data['duration'],
+            city=data['city'],
+            country=data['country'],
+            cost=data['cost'],
+            available=data['available'],
+            pets=data['pets'],
+            lunch=data['lunch'],
+            excursion_type=data['excursion_type'],
+            transport=data['transport'],
+            people=data['people'],
+            children_allowed=data['children_allowed'],
+            health_problems=data['health_problems'],
+            punctuation=data['punctuation'],
+            photo=data['photo'],
+            info=data['info']
+        )
+    db.session.add(new_excursion)
+    db.session.commit()
+    return jsonify({'message': 'Excursion created'}), 201
+    
 
 @app.route('/users/<int:user_id>/favorites', methods=['GET'])
 def get_favorites(user_id):
@@ -61,6 +282,7 @@ def delete_favorite(user_id, id):
 def get_hoteles():
     all_hoteles = Hoteles.query.all()
     return jsonify(all_hoteles), 200
+
 
 @app.route('/vuelos', methods=['GET'])
 def get_vuelos():
