@@ -33,8 +33,12 @@ const pages = [{
 },
 
 {
-    link: 'excursiones',
-    href: 'excursiones'
+    link: 'register',
+    href: '/register'
+},
+{
+    link: 'login',
+    href: '/login'
 }
 
 ];

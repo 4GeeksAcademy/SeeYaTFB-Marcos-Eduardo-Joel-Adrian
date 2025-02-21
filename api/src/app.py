@@ -2,7 +2,7 @@ import os
 import time
 
 from flask import Flask, jsonify
-from models import db, User, Favourite, City, Country, Hoteles, Vuelos, Excursiones, Coches
+from models import db, User, Favourite, City, Country, Hoteles, Vuelos, Excursiones, Coches,Company
 from flask import Flask, request, jsonify
 from flask_migrate import Migrate
 from werkzeug.security import generate_password_hash
@@ -245,6 +245,18 @@ def create_excursion():
     db.session.add(new_excursion)
     db.session.commit()
     return jsonify({'message': 'Excursion created'}), 201
+
+@app.route("/company", methods=["POST"])
+def create_company():
+    data = request.get_json()
+   
+    new_companny = Company(
+            name=data['name'],
+            admin=data['admin'], #user id
+        )
+    db.session.add(new_companny)
+    db.session.commit()
+    return jsonify({'message': 'Company created'}), 201
     
 
 @app.route('/users/<int:user_id>/favorites', methods=['GET'])
@@ -308,6 +320,12 @@ def get_cities():
 def get_countries():
     all_countries = Country.query.all()
     return jsonify(all_countries), 200
+
+@app.route('/company', methods=['GET'])
+def get_companies():
+    all_companies = Country.query.all()
+    return jsonify(all_companies), 200
+
 
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))

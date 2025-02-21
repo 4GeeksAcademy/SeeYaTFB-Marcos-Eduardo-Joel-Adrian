@@ -1,0 +1,1 @@
+export const baseUrl="https://animated-garbanzo-g45pxgwx4xr729754-5000.app.github.dev"
