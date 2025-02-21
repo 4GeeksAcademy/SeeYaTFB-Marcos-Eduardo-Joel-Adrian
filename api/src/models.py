@@ -9,7 +9,7 @@ db = SQLAlchemy()
 class User(db.Model):
     __tablename__ = 'user'
     id: int = db.Column(db.Integer, primary_key=True)
-    username: str = db.Column(db.String(50), nullable=False)
+    username: str = db.Column(db.String(50), unique=True, nullable=False)
     first_name: str = db.Column(db.String(50), nullable=False)
     last_name: str = db.Column(db.String(50), nullable=True)
     email: str = db.Column(db.String(200), unique=True, nullable=False)
@@ -30,7 +30,7 @@ class FavoriteTypeEnum(str, Enum):
 class Company(db.Model):
     __tablename__ = 'company'
     id: int = db.Column(db.Integer, primary_key=True)
-    name: str= db.Column(db.String(50), nullable=False)
+    name: str= db.Column(db.String(50), unique=True, nullable=False)
     admin:int=db.Column(db.Integer, ForeignKey("user.id"))
     #do type of product
 
@@ -92,13 +92,13 @@ class Hoteles(db.Model):
 class Vuelos(db.Model):
     __tablename__ = 'vuelos'
     id: int = db.Column(db.Integer, primary_key=True)
-    company: str = db.Column(db.String(50), nullable=False)
+    company: str = db.Column(db.String(50), ForeignKey('company.name'), nullable=False)
     punctuation: int = db.Column(db.Integer, nullable=False)
-    duration: int = db.Column(db.Integer, nullable=False)
-    land: int = db.Column(db.Integer, nullable=False)
-    take_off: int = db.Column(db.Integer, nullable=False)
-    origin_city: int = db.Column(db.Integer, ForeignKey('city.id'), nullable=False)
-    destiny_city: int = db.Column(db.Integer, ForeignKey('city.id'), nullable=False)
+    duration: str = db.Column(db.String, nullable=False)
+    land: str = db.Column(db.String(50), nullable=False)
+    take_off: str = db.Column(db.String(50), nullable=False)
+    origin_city: str = db.Column(db.String(50), ForeignKey('city.name'), nullable=False)
+    destiny_city: str = db.Column(db.String(50), ForeignKey('city.name'), nullable=False)
     cost: int = db.Column(db.Integer, nullable=False)
     flight_type: str = db.Column(db.String(50), nullable=False)
     available: bool = db.Column(db.Boolean, nullable=False)
@@ -107,8 +107,8 @@ class Vuelos(db.Model):
     baggage: bool = db.Column(db.Boolean, nullable=False)
     baggage_kg: int = db.Column(db.Integer, nullable=False)
     lunch: bool = db.Column(db.Boolean, nullable=False)
-    time_departure: int = db.Column(db.Integer, nullable=False)
-    time_arrival: int = db.Column(db.Integer, nullable=False)
+    time_departure: str = db.Column(db.String, nullable=False)
+    time_arrival: str = db.Column(db.String, nullable=False)
 
 @dataclass
 class Excursiones(db.Model):
