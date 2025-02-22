@@ -263,7 +263,7 @@ def add_favorite(user_id):
     db.session.commit()
     return jsonify(new_favorite), 201
 
-@app.route('favorites/<int:id>', methods=['DELETE'])
+@app.route('/favorites/<int:id>', methods=['DELETE'])
 def delete_favorite(user_id, id):
     favorite = Favourite.query.get(id)
     if not favorite:
