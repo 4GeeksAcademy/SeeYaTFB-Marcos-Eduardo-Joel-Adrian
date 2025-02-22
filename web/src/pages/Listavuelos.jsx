@@ -19,27 +19,19 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 
 const ListaVuelos = ({ filters }) => {
   const [vuelos, setVuelos] = useState([]);
-  const [loading, setLoading] = useState(true);
-
+  
   useEffect(() => {
-    const fetchVuelos = async () => {
-      setLoading(true);
-      const queryParams = new URLSearchParams(
-        Object.entries(filters).filter(([_, value]) => value !== "")
-      ).toString();
-
-      try {
-        const response = await fetch(`http://localhost:5000/buscar_vuelos?${queryParams}`);
-        const data = await response.json();
-        setVuelos(data);
-      } catch (error) {
-        console.error("Error al obtener vuelos:", error);
-      }
-      setLoading(false);
-    };
-
-    fetchVuelos();
-  }, [filters]);
+    fetch(
+      `https://animated-garbanzo-g45pxgwx4xr729754-5000.app.github.dev/flights`,
+      {
+        method: "GET",
+      },
+    )
+      .then((res) => res.json())
+      .then((response) => {
+        setVuelos(response);
+      });
+  },[]);
 
   return (
     <Box sx={{ width: "100%", p: 3 }}>
@@ -47,11 +39,7 @@ const ListaVuelos = ({ filters }) => {
               Resultados
             </Typography>
 
-      {loading ? (
-        <Box display="flex" justifyContent="center" mt={5}>
-          <CircularProgress />
-        </Box>
-      ) : vuelos.length === 0 ? (
+      { vuelos.length === 0 ? (
         <Typography variant="h5" textAlign="center" color="textSecondary">
         </Typography>
       ) : (

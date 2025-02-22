@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKey, Enum
 from dataclasses import dataclass
-from enum import Enum as PyEnum
+from enum import Enum 
 
 db = SQLAlchemy()
 
@@ -31,41 +31,28 @@ class Company(db.Model):
     __tablename__ = 'company'
     id: int = db.Column(db.Integer, primary_key=True)
     name: str= db.Column(db.String(50), nullable=False)
-    admin:int=db.Column(db.Integer, ForeignKey("user.id"))
+    admin = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     #do type of product
+    def __repr__(self):
+        return f"<Company {self.name}>"
 
 @dataclass
 class Favourite(db.Model):
     __tablename__ = 'favourite'
     id: int = db.Column(db.Integer, primary_key=True)
     external_id: int = db.Column(db.Integer, nullable=False)
-    type: str = db.Column(Enum(PyEnum('FavoriteTypeEnum', 'VUELO HOTEL EXCURSION COCHE')), nullable=False)
+    type:FavoriteTypeEnum = db.Column(db.Enum(FavoriteTypeEnum), nullable=False)
     name: str = db.Column(db.String(50), nullable=False)
     user_id: int = db.Column(db.Integer, ForeignKey('user.id'), nullable=False)
+    def __repr__(self):
+        return f"<Favorito {self.name}>"
 
 @dataclass
 class Follower(db.Model):
     __tablename__ = 'follower'
     user_from_id: int = db.Column(db.Integer, ForeignKey('user.id'), primary_key=True)
     user_to_id: int = db.Column(db.Integer, ForeignKey('user.id'), primary_key=True)
-
-@dataclass
-class City(db.Model):
-    __tablename__ = 'city'
-    id: int = db.Column(db.Integer, primary_key=True)
-    country_id: int = db.Column(db.Integer, ForeignKey('country.id'), nullable=False)
-    population: int = db.Column(db.Integer, nullable=False)
-    weather: str = db.Column(db.String(50), nullable=False)
-    info: str = db.Column(db.String(500), nullable=False)
-
-@dataclass
-class Country(db.Model):
-    __tablename__ = 'country'
-    id: int = db.Column(db.Integer, primary_key=True)
-    population: int = db.Column(db.Integer, nullable=False)
-    weather: str = db.Column(db.String(50), nullable=False)
-    currency: str = db.Column(db.String(50), nullable=False)
-    info: str = db.Column(db.String(500), nullable=False)
+  
 
 @dataclass
 class Hoteles(db.Model):
@@ -73,8 +60,8 @@ class Hoteles(db.Model):
     id: int = db.Column(db.Integer, primary_key=True)
     name: str = db.Column(db.String(50), nullable=False)
     address: str = db.Column(db.String(50), nullable=False)
-    city: int = db.Column(db.Integer, ForeignKey('city.id'), nullable=False)
-    country: int = db.Column(db.Integer, ForeignKey('country.id'), nullable=False)
+    city: str = db.Column(db.String(50), nullable=False)
+    country: str = db.Column(db.String(50), nullable=False)
     cost: int = db.Column(db.Integer, nullable=False)
     stars: int = db.Column(db.Integer, nullable=False)
     check_in: int = db.Column(db.Integer, nullable=False)
@@ -87,18 +74,20 @@ class Hoteles(db.Model):
     pool: bool = db.Column(db.Boolean, nullable=False)
     sports: bool = db.Column(db.Boolean, nullable=False)
     events: bool = db.Column(db.Boolean, nullable=False)
+    def __repr__(self):
+        return f"<Hotel {self.name}>"
 
 @dataclass
 class Vuelos(db.Model):
     __tablename__ = 'vuelos'
     id: int = db.Column(db.Integer, primary_key=True)
-    company: str = db.Column(db.String(50), nullable=False)
+    company: str = db.Column(db.String(50), ForeignKey('company.name'), nullable=False)
     punctuation: int = db.Column(db.Integer, nullable=False)
-    duration: int = db.Column(db.Integer, nullable=False)
-    land: int = db.Column(db.Integer, nullable=False)
-    take_off: int = db.Column(db.Integer, nullable=False)
-    origin_city: int = db.Column(db.Integer, ForeignKey('city.id'), nullable=False)
-    destiny_city: int = db.Column(db.Integer, ForeignKey('city.id'), nullable=False)
+    duration: str = db.Column(db.String, nullable=False)
+    land: str = db.Column(db.String(50), nullable=False)
+    take_off: str = db.Column(db.String(50), nullable=False)
+    origin_city: str = db.Column(db.String(50), nullable=False)
+    destiny_city: str = db.Column(db.String(50), nullable=False)
     cost: int = db.Column(db.Integer, nullable=False)
     flight_type: str = db.Column(db.String(50), nullable=False)
     available: bool = db.Column(db.Boolean, nullable=False)
@@ -107,8 +96,10 @@ class Vuelos(db.Model):
     baggage: bool = db.Column(db.Boolean, nullable=False)
     baggage_kg: int = db.Column(db.Integer, nullable=False)
     lunch: bool = db.Column(db.Boolean, nullable=False)
-    time_departure: int = db.Column(db.Integer, nullable=False)
-    time_arrival: int = db.Column(db.Integer, nullable=False)
+    time_departure: str = db.Column(db.String, nullable=False)
+    time_arrival: str = db.Column(db.String, nullable=False)
+    def __repr__(self):
+        return f"<Vuelos {self.name}>"
 
 @dataclass
 class Excursiones(db.Model):
@@ -116,13 +107,15 @@ class Excursiones(db.Model):
     id: int = db.Column(db.Integer, primary_key=True)
     company: str = db.Column(db.String(50), nullable=False)
     duration: int = db.Column(db.Integer, nullable=False)
-    city: int = db.Column(db.Integer, ForeignKey('city.id'), nullable=False)
-    country: int = db.Column(db.Integer, ForeignKey('country.id'), nullable=False)
+    city: str = db.Column(db.String(50), nullable=False)
+    country: str = db.Column(db.String(50), nullable=False)
     cost: int = db.Column(db.Integer, nullable=False)
     available: bool = db.Column(db.Boolean, nullable=False)
     pets: bool = db.Column(db.Boolean, nullable=False)
     lunch: bool = db.Column(db.Boolean, nullable=False)
     excursion_type: str = db.Column(db.String(50), nullable=False)
+    def __repr__(self):
+        return f"<Excursiones {self.name}>"
 
 @dataclass
 class Coches(db.Model):
@@ -130,9 +123,10 @@ class Coches(db.Model):
     id: int = db.Column(db.Integer, primary_key=True)
     company: str = db.Column(db.String(50), nullable=False)
     brand: str = db.Column(db.String(50), nullable=False)
-    city: int = db.Column(db.Integer, ForeignKey('city.id'), nullable=False)
-    country: int = db.Column(db.Integer, ForeignKey('country.id'), nullable=False)
+    city: str = db.Column(db.String(50), nullable=False)
+    country: str = db.Column(db.String(50), nullable=False)
     cost: int = db.Column(db.Integer, nullable=False)
     available: bool = db.Column(db.Boolean, nullable=False)
     car_type: str = db.Column(db.String(50), nullable=False)
-    
+    def __repr__(self):
+        return f"<Coches {self.name}>"

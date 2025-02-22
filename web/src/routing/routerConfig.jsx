@@ -4,6 +4,7 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import HotelsPage from "../pages/Hoteles";
 
+
 const routerConfig = [
   {
     path: "/",
