@@ -79,8 +79,9 @@ class Hoteles(db.Model):
 
 @dataclass
 class Vuelos(db.Model):
-    __tablename__ = 'vuelos'
+    tablename = 'vuelos'
     id: int = db.Column(db.Integer, primary_key=True)
+    company: str = db.Column(db.String(50), ForeignKey('company.name'), nullable=False)
     company: str = db.Column(db.String(50), ForeignKey('company.name'), nullable=False)
     punctuation: int = db.Column(db.Integer, nullable=False)
     duration: str = db.Column(db.String, nullable=False)
@@ -96,6 +97,8 @@ class Vuelos(db.Model):
     baggage: bool = db.Column(db.Boolean, nullable=False)
     baggage_kg: int = db.Column(db.Integer, nullable=False)
     lunch: bool = db.Column(db.Boolean, nullable=False)
+    time_departure: str = db.Column(db.String, nullable=False)
+    time_arrival: str = db.Column(db.String, nullable=False)
     time_departure: str = db.Column(db.String, nullable=False)
     time_arrival: str = db.Column(db.String, nullable=False)
     def __repr__(self):
