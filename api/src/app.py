@@ -1,35 +1,44 @@
 import os
-import time
-
-from flask import Flask, jsonify
-from models import db, User, Favourite, City, Country, Hoteles, Vuelos, Excursiones, Coches,Company
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, url_for
 from flask_migrate import Migrate
-from werkzeug.security import generate_password_hash
+from flask_swagger import swagger
+from flask_cors import CORS
+from utils import APIException, generate_sitemap
+from admin import setup_admin
+from models import db, User, Vuelos,Hoteles,Coches,Company,Excursiones,Favourite
 from flask_jwt_extended import create_access_token, get_csrf_token, jwt_required, JWTManager, set_access_cookies, unset_jwt_cookies, get_jwt_identity
 from sqlalchemy import or_
 import bcrypt
 
+
 app = Flask(__name__)
-start_time = time.time()
+app.url_map.strict_slashes = False
 
-app.config["JWT_SECRET_KEY"] = ("super-secret")
-app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
-app.config["JWT_COOKIE_CSRF_PROTECT"] = True
-app.config["JWT_CSRF_IN_COOKIES"] = True
-app.config["JWT_COOKIE_SECURE"] = True 
+if __name__ == "__main__":
+    app.run()
 
-jwt = JWTManager(app)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////tmp/test.db"
+db_url = os.getenv("DATABASE_URL")
+if db_url is not None:
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_url.replace("postgres://", "postgresql://")
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////tmp/test.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 MIGRATE = Migrate(app, db)
 db.init_app(app)
+CORS(app)
+setup_admin(app)
 
-@app.route("/health", methods=["GET"])
-def health_check():
-    return jsonify({"status": "ok", "uptime": round(time.time() - start_time, 2)}), 200
+# Handle/serialize errors like a JSON object
+@app.errorhandler(APIException)
+def handle_invalid_usage(error):
+    return jsonify(error.to_dict()), error.status_code
+
+# generate sitemap with all your endpoints
+@app.route('/')
+def sitemap():
+    return generate_sitemap(app)
+
 
 @app.route('/users', methods=['GET'])
 def get_users():
@@ -134,7 +143,7 @@ def create_hotel():
     db.session.commit()
     return jsonify({'message': 'Hotel created', 'hotel_id': new_hotel.id}), 201
 
-@app.route("/flight", methods=["POST"])
+@app.route("/flights", methods=["POST"])
 def create_flight():
     data = request.get_json()
    
@@ -192,33 +201,6 @@ def create_car():
     db.session.commit()
     return jsonify({'message': 'Car created'}), 201
 
-@app.route("/city", methods=["POST"])
-def create_city():
-    data = request.get_json()
-   
-    new_city = City(
-            country_id=data['country_id'],
-            population=data['population'],
-            weather=data['weather'],
-            info=data['info']
-        )
-    db.session.add(new_city)
-    db.session.commit()
-    return jsonify({'message': 'City created'}), 201
-
-@app.route("/country", methods=["POST"])
-def create_country():
-    data = request.get_json()
-   
-    new_country = Country(
-            population=data['population'],
-            weather=data['weather'],
-            currency=data['currency'],
-            info=data['info']
-        )
-    db.session.add(new_country)
-    db.session.commit()
-    return jsonify({'message': 'Country created'}), 201
 
 @app.route("/excursion", methods=["POST"])
 def create_excursion():
@@ -259,12 +241,12 @@ def create_company():
     return jsonify({'message': 'Company created'}), 201
     
 
-@app.route('/users/<int:user_id>/favorites', methods=['GET'])
+@app.route('/favorites', methods=['GET'])
 def get_favorites(user_id):
     favorites = Favourite.query.filter_by(user_id=user_id).all()
     return jsonify(favorites), 200
 
-@app.route('/users/<int:user_id>/favorites', methods=['POST'])
+@app.route('/favorites', methods=['POST'])
 def add_favorite(user_id):
     data = request.get_json()
     required_fields = ["name", "type", "external_id"]
@@ -281,7 +263,7 @@ def add_favorite(user_id):
     db.session.commit()
     return jsonify(new_favorite), 201
 
-@app.route('/users/<int:user_id>/favorites/<int:id>', methods=['DELETE'])
+@app.route('/favorites/<int:id>', methods=['DELETE'])
 def delete_favorite(user_id, id):
     favorite = Favourite.query.get(id)
     if not favorite:
@@ -296,7 +278,7 @@ def get_hoteles():
     return jsonify(all_hoteles), 200
 
 
-@app.route('/vuelos', methods=['GET'])
+@app.route('/flights', methods=['GET'])
 def get_vuelos():
     all_vuelos = Vuelos.query.all()
     return jsonify(all_vuelos), 200
@@ -311,21 +293,11 @@ def get_coches():
     all_coches = Coches.query.all()
     return jsonify(all_coches), 200
 
-@app.route('/city', methods=['GET'])
-def get_cities():
-    all_cities = City.query.all()
-    return jsonify(all_cities), 200
-
-@app.route('/country', methods=['GET'])
-def get_countries():
-    all_countries = Country.query.all()
-    return jsonify(all_countries), 200
 
 @app.route('/company', methods=['GET'])
 def get_companies():
-    all_companies = Country.query.all()
+    all_companies = Company.query.all()
     return jsonify(all_companies), 200
-
 
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))

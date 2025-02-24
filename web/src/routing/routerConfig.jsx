@@ -1,8 +1,9 @@
 import Homepage from "../pages/Homepage";
-import BusquedaVuelos from "../components/BusquedaVuelos";
+import { PaginaVuelos } from "../pages/PaginaVuelos";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import HotelsPage from "../pages/Hoteles";
+
 
 const routerConfig = [
   {
@@ -10,7 +11,7 @@ const routerConfig = [
     element: <Homepage />,
   },{
     path: "/vuelos",
-    element: <BusquedaVuelos />,
+    element: <PaginaVuelos />,
   },{
     path: "/hoteles",
     element: <HotelsPage />,

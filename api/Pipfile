@@ -12,6 +12,8 @@ flask-sqlalchemy = "*"
 psycopg2 = "*"
 bcrypt = "*"
 flask-jwt-extended = "*"
+db = "*"
+flask-swagger = "*"
 
 [dev-packages]
 

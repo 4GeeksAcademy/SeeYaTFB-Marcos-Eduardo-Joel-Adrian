@@ -13,7 +13,8 @@ import {
   RadioGroup,
   Grid,
   Card,
-  CardContent
+  CardContent,
+  InputAdornment
 } from "@mui/material";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import FlightLandIcon from "@mui/icons-material/FlightLand";
@@ -23,7 +24,7 @@ import WifiIcon from "@mui/icons-material/Wifi";
 import PetsIcon from "@mui/icons-material/Pets";
 import LuggageIcon from "@mui/icons-material/Luggage";
 
-const Vuelos = () => {
+const BuscadorVuelos = () => {
   const [filters, setFilters] = useState({
     origin_city: "",
     destiny_city: "",
@@ -39,15 +40,14 @@ const Vuelos = () => {
   });
 
   const handleChange = (event) => {
-    setLocalFilters({ ...localFilters, [event.target.name]: event.target.value });
+    setFilters({ ...filters, [event.target.name]: event.target.value });
   };
 
   const handleSearch = () => {
-    setFilters(localFilters);
+    console.log("Filtros aplicados:", filters);
   };
 
   return (
-    <>
     <Box sx={{ width: "100%", p: 3 }}>
       <Typography variant="h2" textAlign="center" gutterBottom>
         Buscar Vuelos
@@ -65,7 +65,11 @@ const Vuelos = () => {
                 variant="outlined"
                 onChange={handleChange}
                 InputProps={{
-                  startAdornment: <FlightTakeoffIcon color="primary" />,
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <FlightTakeoffIcon color="primary" />
+                    </InputAdornment>
+                  ),
                 }}
               />
             </Grid>
@@ -79,7 +83,11 @@ const Vuelos = () => {
                 variant="outlined"
                 onChange={handleChange}
                 InputProps={{
-                  startAdornment: <FlightLandIcon color="primary" />,
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <FlightLandIcon color="primary" />
+                    </InputAdornment>
+                  ),
                 }}
               />
             </Grid>
@@ -93,7 +101,11 @@ const Vuelos = () => {
                 variant="outlined"
                 onChange={handleChange}
                 InputProps={{
-                  startAdornment: <BusinessIcon color="primary" />,
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <BusinessIcon color="primary" />
+                    </InputAdornment>
+                  ),
                 }}
               />
             </Grid>
@@ -153,7 +165,9 @@ const Vuelos = () => {
             {/* WiFi */}
             <Grid item xs={12}>
               <FormControl component="fieldset">
-                <Typography><WifiIcon color="primary" /> WiFi</Typography>
+                <Typography>
+                  <WifiIcon color="primary" /> WiFi
+                </Typography>
                 <RadioGroup row name="wifi" onChange={handleChange}>
                   <FormControlLabel value="true" control={<Radio />} label="Sí" />
                   <FormControlLabel value="false" control={<Radio />} label="No" />
@@ -164,7 +178,9 @@ const Vuelos = () => {
             {/* Mascotas */}
             <Grid item xs={12}>
               <FormControl component="fieldset">
-                <Typography><PetsIcon color="primary" /> Mascotas</Typography>
+                <Typography>
+                  <PetsIcon color="primary" /> Mascotas
+                </Typography>
                 <RadioGroup row name="pets" onChange={handleChange}>
                   <FormControlLabel value="true" control={<Radio />} label="Sí" />
                   <FormControlLabel value="false" control={<Radio />} label="No" />
@@ -175,7 +191,9 @@ const Vuelos = () => {
             {/* Equipaje */}
             <Grid item xs={12}>
               <FormControl component="fieldset">
-                <Typography><LuggageIcon color="primary" /> Equipaje</Typography>
+                <Typography>
+                  <LuggageIcon color="primary" /> Equipaje
+                </Typography>
                 <RadioGroup row name="baggage" onChange={handleChange}>
                   <FormControlLabel value="true" control={<Radio />} label="Sí" />
                   <FormControlLabel value="false" control={<Radio />} label="No" />
@@ -193,8 +211,6 @@ const Vuelos = () => {
         </CardContent>
       </Card>
     </Box>
-    </>
   );
 };
-
-export default Vuelos;
+export default BuscadorVuelos;
