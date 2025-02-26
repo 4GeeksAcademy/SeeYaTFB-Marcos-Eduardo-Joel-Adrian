@@ -16,13 +16,15 @@ import WifiIcon from "@mui/icons-material/Wifi";
 import PetsIcon from "@mui/icons-material/Pets";
 import LuggageIcon from "@mui/icons-material/Luggage";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import { baseUrl } from "../services/api";
 
 const ListaVuelos = ({ filters }) => {
   const [vuelos, setVuelos] = useState([]);
   
+
   useEffect(() => {
     fetch(
-      `https://animated-garbanzo-g45pxgwx4xr729754-5000.app.github.dev/flights`,
+      `${baseUrl}/flights`,
       {
         method: "GET",
       },

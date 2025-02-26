@@ -9,14 +9,14 @@ function App() {
   const [filters, setFilters] = useState({});
 
   return (
-    <Router>
+    <>
       <NavBar />
       <Routes>
         {routerConfig.map((item, index) => (
           <Route key={index} path={item.path} element={item.element} />
         ))}
       </Routes>
-    </Router>
+    </>
   );
 }
 

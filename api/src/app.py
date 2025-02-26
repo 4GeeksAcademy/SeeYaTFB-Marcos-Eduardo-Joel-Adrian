@@ -26,9 +26,16 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 MIGRATE = Migrate(app, db)
 db.init_app(app)
-CORS(app)
+CORS(app, supports_credentials=True, origins=["https://redesigned-space-potato-97qx6p4676v9hx6x5-5173.app.github.dev"])
 setup_admin(app)
 
+app.config["JWT_SECRET_KEY"] = ("super-secret")
+app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
+app.config["JWT_COOKIE_CSRF_PROTECT"] = True
+app.config["JWT_CSRF_IN_COOKIES"] = True
+app.config["JWT_COOKIE_SECURE"] = True 
+
+jwt = JWTManager(app)
 # Handle/serialize errors like a JSON object
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
