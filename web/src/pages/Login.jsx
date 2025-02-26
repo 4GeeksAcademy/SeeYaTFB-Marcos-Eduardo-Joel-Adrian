@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import {
   Container,
   TextField,
@@ -10,31 +10,36 @@ import {
   CircularProgress,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { UserContext } from "../context/User";
+import { useNavigate } from "react-router";
 
 const Login = () => {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
+  const {login}=useContext(UserContext)
+  const navigate = useNavigate()
+  
   const handleChange = (event) => {
     setCredentials({ ...credentials, [event.target.name]: event.target.value });
   };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
     setError("");
-
-    // Simulación de login
-    setTimeout(() => {
-      setLoading(false);
-      if (credentials.email === "admin@vuelos.com" && credentials.password === "123456") {
-        alert("Inicio de sesión exitoso ");
-      } else {
-        setError("Correo o contraseña incorrectos.");
-      }
-    }, 1500);
+  
+    const result = await login(credentials.email, credentials.password);
+  
+    if (result.success) {
+      alert("Inicio de sesión exitoso");
+      navigate("/");
+    } else {
+      setError(result.message);
+    }
+  
+    setLoading(false);
   };
+  
 
   return (
     <Box

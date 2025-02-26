@@ -1,8 +1,8 @@
 import Homepage from "../pages/Homepage";
 import { PaginaVuelos } from "../pages/PaginaVuelos";
-import Login from "../pages/Login";
-import Register from "../pages/Register";
+import RegisterPage from "../pages/Register";
 import HotelsPage from "../pages/Hoteles";
+import LoginPage from "../pages/Login";
 
 
 const routerConfig = [
@@ -17,10 +17,10 @@ const routerConfig = [
     element: <HotelsPage />,
   },{
     path: "/login",
-    element: <Login />,
+    element: <LoginPage />,
   },{
     path: "/register",
-    element: <Register />,
+    element: <RegisterPage />,
   },
 ];
 

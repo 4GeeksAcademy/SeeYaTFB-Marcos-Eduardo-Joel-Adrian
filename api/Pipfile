@@ -4,16 +4,16 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask = "*"
-flask-admin = {extras = ["s3", "export", "sqlalchemy", "translation", "images"], version = "*"}
-flask-cors = "*"
-flask-migrate = "*"
-flask-sqlalchemy = "*"
 psycopg2 = "*"
 bcrypt = "*"
 flask-jwt-extended = "*"
 db = "*"
 flask-swagger = "*"
+flask-admin = "*"
+flask-cors = "*"
+flask-migrate = "*"
+flask-sqlalchemy = "*"
+flask = "*"
 
 [dev-packages]
 
