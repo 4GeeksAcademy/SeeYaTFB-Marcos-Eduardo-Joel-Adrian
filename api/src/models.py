@@ -83,7 +83,7 @@ class Hoteles(db.Model):
 class Vuelos(db.Model):
     __tablename__ = 'vuelos'
     id: int = db.Column(db.Integer, primary_key=True)
-    company: str = db.Column(db.String(50), ForeignKey('company.name'), nullable=False)
+    company_id: int = db.Column(db.Integer, ForeignKey('company.id'), nullable=False)
     punctuation: int = db.Column(db.Integer, nullable=False)
     duration: str = db.Column(db.String, nullable=False)
     land: str = db.Column(db.String(50), nullable=False)

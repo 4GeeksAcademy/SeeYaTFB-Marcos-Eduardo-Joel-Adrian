@@ -29,7 +29,8 @@ db.init_app(app)
 CORS(app, supports_credentials=True, origins=["https://redesigned-space-potato-97qx6p4676v9hx6x5-5173.app.github.dev"])
 setup_admin(app)
 
-app.config["JWT_SECRET_KEY"] = ("super-secret")
+api_secret = os.getenv("API_SECRET")
+app.config["JWT_SECRET_KEY"] = api_secret
 app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
 app.config["JWT_COOKIE_CSRF_PROTECT"] = True
 app.config["JWT_CSRF_IN_COOKIES"] = True
