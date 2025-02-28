@@ -37,7 +37,7 @@ class Company(db.Model):
         return f"<Company {self.name}>"
 
 @dataclass
- class Favourite(db.Model): #Esto son las reservas
+class Favourite(db.Model): #Esto son las reservas
     __tablename__ = 'favourite'
     id: int = db.Column(db.Integer, primary_key=True)
     external_id: int = db.Column(db.Integer, nullable=False)
