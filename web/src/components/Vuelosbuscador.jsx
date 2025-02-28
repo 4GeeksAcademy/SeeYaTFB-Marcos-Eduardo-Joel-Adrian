@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, Input, Button } from "@mui/material";
 
-const HotelsPage = () => {
+
+const Vuelosbuscador = () => {
   const [hotels, setHotels] = useState([]);
   const [search, setSearch] = useState("");
 
@@ -45,7 +44,7 @@ const HotelsPage = () => {
   );
 };
 
-export default HotelsPage;
+export default Vuelosbuscador;
 
 const express = require("express");
 const mongoose = require("mongoose");
