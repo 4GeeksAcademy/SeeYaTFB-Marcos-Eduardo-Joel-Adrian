@@ -1,1 +1,0 @@
-export const baseUrl="https://redesigned-space-potato-97qx6p4676v9hx6x5-5000.app.github.dev"

@@ -3,9 +3,9 @@ from flask import Flask, request, jsonify, url_for
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from flask_cors import CORS
-from utils import APIException, generate_sitemap
-from admin import setup_admin
-from models import db, User, Vuelos,Hoteles,Coches,Company,Excursiones,Favourite
+from src.utils import APIException, generate_sitemap
+from src.admin import setup_admin
+from src.models import db, User, Vuelos,Hoteles,Coches,Company,Excursiones,Favourite
 from flask_jwt_extended import create_access_token, get_csrf_token, jwt_required, JWTManager, set_access_cookies, unset_jwt_cookies, get_jwt_identity
 from sqlalchemy import or_
 import bcrypt
@@ -19,7 +19,7 @@ if __name__ == "__main__":
 
 db_url = os.getenv("DATABASE_URL")
 if db_url is not None:
-    app.config['SQLALCHEMY_DATABASE_URI'] = db_url.replace("postgres://", "postgresql://")
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 else:
     app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////tmp/test.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
