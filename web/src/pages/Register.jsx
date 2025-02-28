@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Container,
   TextField,
@@ -12,10 +12,15 @@ import {
   Input,
 } from "@mui/material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import { UserContext } from "../context/User";
 
-const Register = () => {
+
+const RegisterPage = () => {
+
+  
+  const {register}= useContext(UserContext)
   const [formData, setFormData] = useState({
-    user_name: "",
+    username: "",
     first_name: "",
     last_name: "",
     email: "",
@@ -28,6 +33,7 @@ const Register = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  
 
   const handleChange = (event) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
@@ -43,10 +49,9 @@ const Register = () => {
     setLoading(true);
     setError("");
 
-    setTimeout(() => {
-      setLoading(false);
-      alert("Registro exitoso! ✅✈️");
-    }, 1500);
+    register(formData.username,formData.email,formData.password,formData.first_name,formData.last_name,formData.country,formData.city,formData.address,formData.phone_number,formData.photo);
+  
+    setLoading(false);
   };
 
   return (
@@ -71,13 +76,13 @@ const Register = () => {
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="Usuario" name="user_name" required onChange={handleChange} />
+                <TextField fullWidth label="Usuario" name="username" required onChange={handleChange} />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField fullWidth label="Nombre" name="first_name" required onChange={handleChange} />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="Apellidos" name="last_name" required onChange={handleChange} />
+                <TextField fullWidth label="Apellidos" name="last_name" onChange={handleChange} />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField fullWidth label="Correo" type="email" name="email" required onChange={handleChange} />
@@ -119,4 +124,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default RegisterPage;

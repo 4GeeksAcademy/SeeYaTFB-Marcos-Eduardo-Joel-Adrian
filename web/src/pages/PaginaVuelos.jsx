@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import BuscadorVuelos from "../components/BuscadorVuelos";
-import ListaVuelos from "../components/Listavuelos";
+
+import ListaVuelos from "../components/listas/Listavuelos";
 import Grid from "@mui/material/Grid";
+import BuscadorVuelos from "../components/buscadores/BuscadorVuelos";
 
 export const PaginaVuelos = () => {
   const [filters, setFilters] = useState({});

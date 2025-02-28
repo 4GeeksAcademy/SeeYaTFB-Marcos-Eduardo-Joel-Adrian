@@ -16,7 +16,7 @@ import WifiIcon from "@mui/icons-material/Wifi";
 import PetsIcon from "@mui/icons-material/Pets";
 import LuggageIcon from "@mui/icons-material/Luggage";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import { baseUrl } from "../services/api";
+import { baseUrl } from "../../services/api/config";
 
 const ListaVuelos = ({ filters }) => {
   const [vuelos, setVuelos] = useState([]);
