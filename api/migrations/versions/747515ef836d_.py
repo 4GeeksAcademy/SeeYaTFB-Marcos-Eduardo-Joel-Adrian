@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 79c397b52a31
+Revision ID: 747515ef836d
 Revises: 
-Create Date: 2025-02-22 18:40:40.373520
+Create Date: 2025-02-28 18:33:42.413642
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '79c397b52a31'
+revision = '747515ef836d'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -27,6 +27,21 @@ def upgrade():
     sa.Column('cost', sa.Integer(), nullable=False),
     sa.Column('available', sa.Boolean(), nullable=False),
     sa.Column('car_type', sa.String(length=50), nullable=False),
+    sa.Column('km_limit_day', sa.String(length=50), nullable=False),
+    sa.Column('duration', sa.String(length=50), nullable=False),
+    sa.Column('type', sa.String(length=50), nullable=False),
+    sa.Column('max_passengers', sa.String(length=50), nullable=False),
+    sa.Column('fuel_type', sa.String(length=50), nullable=False),
+    sa.Column('total_km', sa.String(length=50), nullable=False),
+    sa.Column('automatic', sa.Boolean(), nullable=False),
+    sa.Column('photo', sa.String(length=200), nullable=True),
+    sa.Column('door', sa.String(length=200), nullable=True),
+    sa.Column('airport_take', sa.Boolean(), nullable=False),
+    sa.Column('air', sa.Boolean(), nullable=False),
+    sa.Column('punctuation', sa.Integer(), nullable=False),
+    sa.Column('guarantee', sa.Boolean(), nullable=False),
+    sa.Column('insurance', sa.Boolean(), nullable=False),
+    sa.Column('info', sa.String(length=5000), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('excursiones',
@@ -40,6 +55,13 @@ def upgrade():
     sa.Column('pets', sa.Boolean(), nullable=False),
     sa.Column('lunch', sa.Boolean(), nullable=False),
     sa.Column('excursion_type', sa.String(length=50), nullable=False),
+    sa.Column('transport', sa.String(length=50), nullable=False),
+    sa.Column('max_people', sa.String(length=50), nullable=False),
+    sa.Column('childs', sa.Boolean(), nullable=False),
+    sa.Column('health_problems', sa.String(length=50), nullable=False),
+    sa.Column('info', sa.String(length=5000), nullable=False),
+    sa.Column('photo', sa.String(length=200), nullable=True),
+    sa.Column('punctuation', sa.Integer(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('hoteles',
@@ -60,6 +82,7 @@ def upgrade():
     sa.Column('pool', sa.Boolean(), nullable=False),
     sa.Column('sports', sa.Boolean(), nullable=False),
     sa.Column('events', sa.Boolean(), nullable=False),
+    sa.Column('photo', sa.String(length=200), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('user',
@@ -80,14 +103,14 @@ def upgrade():
     op.create_table('company',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=50), nullable=False),
-    sa.Column('admin', sa.Integer(), nullable=True),
+    sa.Column('admin', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['admin'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('favourite',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('external_id', sa.Integer(), nullable=False),
-    sa.Column('type', sa.Enum('VUELO', 'HOTEL', 'EXCURSION', 'COCHE', name='favoritetypeenum'), nullable=False),
+    sa.Column('type', sa.Enum('Hotels', 'Flys', 'Excursions', 'Cars', name='favoritetypeenum'), nullable=False),
     sa.Column('name', sa.String(length=50), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
@@ -102,7 +125,7 @@ def upgrade():
     )
     op.create_table('vuelos',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('company', sa.String(length=50), nullable=False),
+    sa.Column('company_id', sa.Integer(), nullable=False),
     sa.Column('punctuation', sa.Integer(), nullable=False),
     sa.Column('duration', sa.String(), nullable=False),
     sa.Column('land', sa.String(length=50), nullable=False),
@@ -119,7 +142,8 @@ def upgrade():
     sa.Column('lunch', sa.Boolean(), nullable=False),
     sa.Column('time_departure', sa.String(), nullable=False),
     sa.Column('time_arrival', sa.String(), nullable=False),
-    sa.ForeignKeyConstraint(['company'], ['company.name'], ),
+    sa.Column('photo', sa.String(length=200), nullable=True),
+    sa.ForeignKeyConstraint(['company_id'], ['company.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
