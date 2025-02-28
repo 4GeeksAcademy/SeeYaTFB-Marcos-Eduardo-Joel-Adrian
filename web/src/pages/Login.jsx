@@ -1,4 +1,5 @@
-import React, { useState,useContext } from "react";
+import React, { useState, useContext } from "react";
+import { Link } from "react-router-dom";
 import {
   Container,
   TextField,
@@ -7,39 +8,26 @@ import {
   Box,
   Paper,
   Avatar,
-  CircularProgress,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { UserContext } from "../context/User";
-import { useNavigate } from "react-router";
 
 const Login = () => {
-  const [credentials, setCredentials] = useState({ email: "", password: "" });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const {login}=useContext(UserContext)
-  const navigate = useNavigate()
-  
-  const handleChange = (event) => {
-    setCredentials({ ...credentials, [event.target.name]: event.target.value });
-  };
-  const handleSubmit = async (event) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState(""); // Estado para el mensaje de error
+
+  const { login } = useContext(UserContext);
+
+  const handleLogin = async (event) => {
     event.preventDefault();
-    setLoading(true);
-    setError("");
-  
-    const result = await login(credentials.email, credentials.password);
-  
-    if (result.success) {
-      alert("Inicio de sesión exitoso");
-      navigate("/");
-    } else {
-      setError(result.message);
+    
+    try {
+      await login(email, password);
+    } catch (error) {
+      setErrorMessage(error.message);
     }
-  
-    setLoading(false);
   };
-  
 
   return (
     <Box
@@ -60,7 +48,7 @@ const Login = () => {
             Inicia Sesión
           </Typography>
 
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleLogin}>
             <TextField
               fullWidth
               label="Correo electrónico"
@@ -69,7 +57,8 @@ const Login = () => {
               variant="outlined"
               margin="normal"
               required
-              onChange={handleChange}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <TextField
               fullWidth
@@ -79,24 +68,33 @@ const Login = () => {
               variant="outlined"
               margin="normal"
               required
-              onChange={handleChange}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
-            {error && (
-              <Typography color="error" sx={{ mt: 1 }}>
-                {error}
+
+            {errorMessage && (
+              <Typography color="error" sx={{ mt: 1, mb: 2 }}>
+                {errorMessage}
               </Typography>
             )}
+
             <Button
               fullWidth
               type="submit"
               variant="contained"
               color="primary"
-              sx={{ mt: 3, mb: 2 }}
-              disabled={loading}
+              sx={{ mt: 2, mb: 2 }}
             >
-              {loading ? <CircularProgress size={24} /> : "Ingresar"}
+              Ingresar
             </Button>
           </form>
+
+          <Typography variant="body2" sx={{ mt: 2 }}>
+            ¿No tienes una cuenta?{" "}
+            <Link to="/register" style={{ textDecoration: "none", color: "#1976d2" }}>
+              Regístrate aquí
+            </Link>
+          </Typography>
         </Paper>
       </Container>
     </Box>

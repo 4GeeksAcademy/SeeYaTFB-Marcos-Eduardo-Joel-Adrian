@@ -180,7 +180,6 @@ def create_flight():
 @app.route("/car", methods=["POST"])
 def create_car():
     data = request.get_json()
-   
     new_car = Coches(
             company=data['company'],
             brand=data['brand'],
@@ -209,32 +208,6 @@ def create_car():
     return jsonify({'message': 'Car created'}), 201
 
 
-@app.route("/excursion", methods=["POST"])
-def create_excursion():
-    data = request.get_json()
-   
-    new_excursion = Excursiones(
-            company=data['company'],
-            duration=data['duration'],
-            city=data['city'],
-            country=data['country'],
-            cost=data['cost'],
-            available=data['available'],
-            pets=data['pets'],
-            lunch=data['lunch'],
-            excursion_type=data['excursion_type'],
-            transport=data['transport'],
-            people=data['people'],
-            children_allowed=data['children_allowed'],
-            health_problems=data['health_problems'],
-            punctuation=data['punctuation'],
-            photo=data['photo'],
-            info=data['info']
-        )
-    db.session.add(new_excursion)
-    db.session.commit()
-    return jsonify({'message': 'Excursion created'}), 201
-
 @app.route("/company", methods=["POST"])
 def create_company():
     data = request.get_json()
@@ -249,11 +222,14 @@ def create_company():
     
 
 @app.route('/favorites', methods=['GET'])
-def get_favorites(user_id):
+@jwt_required()
+def get_favorites():
+    user_id=get_jwt_identity()
     favorites = Favourite.query.filter_by(user_id=user_id).all()
     return jsonify(favorites), 200
 
 @app.route('/favorites', methods=['POST'])
+@jwt_required()
 def add_favorite(user_id):
     data = request.get_json()
     required_fields = ["name", "type", "external_id"]
@@ -271,7 +247,8 @@ def add_favorite(user_id):
     return jsonify(new_favorite), 201
 
 @app.route('/favorites/<int:id>', methods=['DELETE'])
-def delete_favorite(user_id, id):
+@jwt_required()
+def delete_favorite(id):
     favorite = Favourite.query.get(id)
     if not favorite:
         return jsonify({"error": "Favorite not found"}), 404
@@ -279,7 +256,7 @@ def delete_favorite(user_id, id):
     db.session.commit()
     return jsonify({"message": "Favorite deleted successfully"}), 200
 
-@app.route('/hoteles', methods=['GET'])
+@app.route('/hotels', methods=['GET'])
 def get_hoteles():
     all_hoteles = Hoteles.query.all()
     return jsonify(all_hoteles), 200
@@ -290,18 +267,12 @@ def get_vuelos():
     all_vuelos = Vuelos.query.all()
     return jsonify(all_vuelos), 200
 
-@app.route('/excursiones', methods=['GET'])
-def get_excursiones():
-    all_excursiones = Excursiones.query.all()
-    return jsonify(all_excursiones), 200
-
-@app.route('/coches', methods=['GET'])
+@app.route('/cars', methods=['GET'])
 def get_coches():
     all_coches = Coches.query.all()
     return jsonify(all_coches), 200
 
-
-@app.route('/company', methods=['GET'])
+@app.route('/companies', methods=['GET'])
 def get_companies():
     all_companies = Company.query.all()
     return jsonify(all_companies), 200
