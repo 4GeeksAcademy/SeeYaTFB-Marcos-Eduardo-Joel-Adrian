@@ -37,7 +37,7 @@ class Company(db.Model):
         return f"<Company {self.name}>"
 
 @dataclass
-class Favourite(db.Model):
+class Favourite(db.Model): #Esto son las reservas
     __tablename__ = 'favourite'
     id: int = db.Column(db.Integer, primary_key=True)
     external_id: int = db.Column(db.Integer, nullable=False)
@@ -74,6 +74,8 @@ class Hoteles(db.Model):
     pool: bool = db.Column(db.Boolean, nullable=False)
     sports: bool = db.Column(db.Boolean, nullable=False)
     events: bool = db.Column(db.Boolean, nullable=False)
+    photo: str = db.Column(db.String(200), nullable=True)
+
     def __repr__(self):
         return f"<Hotel {self.name}>"
 
@@ -81,7 +83,7 @@ class Hoteles(db.Model):
 class Vuelos(db.Model):
     __tablename__ = 'vuelos'
     id: int = db.Column(db.Integer, primary_key=True)
-    company: str = db.Column(db.String(50), ForeignKey('company.name'), nullable=False)
+    company_id: int = db.Column(db.Integer, ForeignKey('company.id'), nullable=False)
     punctuation: int = db.Column(db.Integer, nullable=False)
     duration: str = db.Column(db.String, nullable=False)
     land: str = db.Column(db.String(50), nullable=False)
@@ -98,6 +100,8 @@ class Vuelos(db.Model):
     lunch: bool = db.Column(db.Boolean, nullable=False)
     time_departure: str = db.Column(db.String, nullable=False)
     time_arrival: str = db.Column(db.String, nullable=False)
+    photo: str = db.Column(db.String(200), nullable=True)
+
     def __repr__(self):
         return f"<Vuelos {self.name}>"
 
@@ -114,6 +118,14 @@ class Excursiones(db.Model):
     pets: bool = db.Column(db.Boolean, nullable=False)
     lunch: bool = db.Column(db.Boolean, nullable=False)
     excursion_type: str = db.Column(db.String(50), nullable=False)
+    transport: str = db.Column(db.String(50), nullable=False)
+    max_people: str = db.Column(db.String(50), nullable=False)
+    childs: bool = db.Column(db.Boolean, nullable=False)
+    health_problems: str = db.Column(db.String(50), nullable=False)
+    info: str = db.Column(db.String(5000), nullable=False)
+    photo: str = db.Column(db.String(200), nullable=True)
+    punctuation: int = db.Column(db.Integer, nullable=False)
+
     def __repr__(self):
         return f"<Excursiones {self.name}>"
 
@@ -128,5 +140,22 @@ class Coches(db.Model):
     cost: int = db.Column(db.Integer, nullable=False)
     available: bool = db.Column(db.Boolean, nullable=False)
     car_type: str = db.Column(db.String(50), nullable=False)
+    km_limit_day: str = db.Column(db.String(50), nullable=False)
+    duration: str = db.Column(db.String(50), nullable=False)
+    type: str = db.Column(db.String(50), nullable=False)
+    max_passengers: str = db.Column(db.String(50), nullable=False)
+    fuel_type: str = db.Column(db.String(50), nullable=False)
+    total_km: str = db.Column(db.String(50), nullable=False)
+    automatic: bool = db.Column(db.Boolean, nullable=False)
+    photo: str = db.Column(db.String(200), nullable=True)
+    door: str = db.Column(db.String(200), nullable=True)
+    airport_take: bool = db.Column(db.Boolean, nullable=False)
+    air: bool = db.Column(db.Boolean, nullable=False)
+    punctuation: int = db.Column(db.Integer, nullable=False)
+    guarantee: bool = db.Column(db.Boolean, nullable=False)
+    insurance: bool = db.Column(db.Boolean, nullable=False)
+    info: str = db.Column(db.String(5000), nullable=False)
+
+
     def __repr__(self):
         return f"<Coches {self.name}>"

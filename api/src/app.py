@@ -3,9 +3,9 @@ from flask import Flask, request, jsonify, url_for
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from flask_cors import CORS
-from utils import APIException, generate_sitemap
-from admin import setup_admin
-from models import db, User, Vuelos,Hoteles,Coches,Company,Excursiones,Favourite
+from src.utils import APIException, generate_sitemap
+from src.admin import setup_admin
+from src.models import db, User, Vuelos,Hoteles,Coches,Company,Excursiones,Favourite
 from flask_jwt_extended import create_access_token, get_csrf_token, jwt_required, JWTManager, set_access_cookies, unset_jwt_cookies, get_jwt_identity
 from sqlalchemy import or_
 import bcrypt
@@ -19,7 +19,7 @@ if __name__ == "__main__":
 
 db_url = os.getenv("DATABASE_URL")
 if db_url is not None:
-    app.config['SQLALCHEMY_DATABASE_URI'] = db_url.replace("postgres://", "postgresql://")
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 else:
     app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////tmp/test.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -29,7 +29,8 @@ db.init_app(app)
 CORS(app, supports_credentials=True, origins=["https://redesigned-space-potato-97qx6p4676v9hx6x5-5173.app.github.dev"])
 setup_admin(app)
 
-app.config["JWT_SECRET_KEY"] = ("super-secret")
+api_secret = os.getenv("API_SECRET")
+app.config["JWT_SECRET_KEY"] = api_secret
 app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
 app.config["JWT_COOKIE_CSRF_PROTECT"] = True
 app.config["JWT_CSRF_IN_COOKIES"] = True

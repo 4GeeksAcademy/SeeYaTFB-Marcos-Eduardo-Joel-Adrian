@@ -1,6 +1,6 @@
 import os
 from flask_admin import Admin
-from models import db, User, Vuelos,Hoteles,Coches,Company,Excursiones,Favourite
+from src.models import db, User, Vuelos,Hoteles,Coches,Company,Excursiones,Favourite
 from flask_admin.contrib.sqla import ModelView
 from sqlalchemy.orm.properties import RelationshipProperty
 
