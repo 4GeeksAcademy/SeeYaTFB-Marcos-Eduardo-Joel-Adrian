@@ -77,7 +77,3 @@ app.get("/hotels", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-
-app.listen(5000, () => {
-  console.log("Servidor corriendo en http://localhost:5000");
-});

@@ -1,6 +1,5 @@
 import { createContext, useState } from "react";
-
-import { baseUrl } from "../services/api";
+import { baseUrl } from "../services/api/config";
 import { useNavigate } from "react-router";
 
 
