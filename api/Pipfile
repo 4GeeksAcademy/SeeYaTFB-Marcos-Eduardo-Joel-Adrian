@@ -16,6 +16,7 @@ flask-sqlalchemy = "*"
 flask = "*"
 gunicorn = "*"
 python-dotenv = "*"
+cloudinary = "*"
 
 [dev-packages]
 
