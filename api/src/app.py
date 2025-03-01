@@ -10,8 +10,42 @@ from flask_jwt_extended import create_access_token, get_csrf_token, jwt_required
 from sqlalchemy import or_
 import bcrypt
 
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+from cloudinary.utils import cloudinary_url
+
+from dotenv import load_dotenv
+load_dotenv()
+
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+    secure=True
+)
 
 app = Flask(__name__)
+
+# Ruta para subir imágenes
+@app.route("/upload", methods=["POST"])
+def upload_file():
+    if "file" not in request.files:
+        return jsonify({"error": "No file part"}), 400
+
+    file = request.files["file"]  # Obtener la imagen subida
+
+    if file.filename == "":
+        return jsonify({"error": "No selected file"}), 400
+
+    # Subir imagen a Cloudinary con un nombre único
+    result = cloudinary.uploader.upload(file)
+
+    return jsonify({"url": result["secure_url"]})
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
 app.url_map.strict_slashes = False
 
 if __name__ == "__main__":
