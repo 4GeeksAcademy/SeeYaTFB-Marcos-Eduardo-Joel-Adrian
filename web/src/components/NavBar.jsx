@@ -14,10 +14,9 @@ import { UserContext } from '../context/User';
 import { FavoritesContext } from '../context/Booking';
 
 const pages = [
-  { link: 'Hoteles', href: '/hoteles' },
-  { link: 'Vuelos', href: '/vuelos' },
-  { link: 'Coches', href: '/coches' },
-  { link: 'Excursiones', href: '/excursiones' }
+  { link: 'Hoteles', href: '/hotels' },
+  { link: 'Vuelos', href: '/flights' },
+  { link: 'Coches', href: '/cars' },
 ];
 
 const NavBar = () => {
