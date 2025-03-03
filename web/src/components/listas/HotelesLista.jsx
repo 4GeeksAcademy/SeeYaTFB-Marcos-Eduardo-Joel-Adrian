@@ -9,18 +9,18 @@ const HotelesLista = () => {
   const [search, setSearch] = useState("");
  
 
-  useEffect(() => {
-      fetch(
-        `${baseUrl}/hotels`,
-        {
-          method: "GET",
-        },
-      )
-        .then((res) => res.json())
-        .then((response) => {
-          setHotels(response);
-        });
-    },[]);
+ useEffect(() => {
+    fetch(
+      `${baseUrl}/hotels`,
+      {
+        method: "GET",
+      },
+    )
+      .then((res) => res.json())
+      .then((response) => {
+        setHotels(response);
+      });
+  },[]);
 
   const filteredHotels = useMemo(
     () => hotels.filter(hotel => hotel.name.toLowerCase().includes(search.toLowerCase())),
@@ -36,7 +36,7 @@ const HotelesLista = () => {
         {filteredHotels.length > 0 ? (
           filteredHotels.map((hotel) => (
             <Card key={hotel.id} className="p-4 shadow-lg">
-              <img src={hotel.image} alt={hotel.name} className="w-full h-40 object-cover rounded-lg mb-2" />
+              <img src={hotel.photo} alt={hotel.name} className="w-full h-40 object-cover rounded-lg mb-2" />
               <CardContent>
                 <Typography variant="h6">{hotel.name}</Typography>
                 
@@ -51,6 +51,10 @@ const HotelesLista = () => {
                   {hotel.city}, {hotel.country}
                 </Typography>
                 
+                <Typography color="textSecondary">
+                  {hotel.address}, {hotel.check_in}, {hotel.check_out}
+                </Typography>
+
                 <Typography color="primary" fontWeight="bold">
                   ${hotel.cost} por noche
                 </Typography>
@@ -62,11 +66,10 @@ const HotelesLista = () => {
                   {hotel.spa && <Chip icon={<Spa />} label="Spa" color="secondary" />}
                   {hotel.golf && <Chip icon={<SportsGolf />} label="Golf" color="warning" />}
                   {hotel.sports && <Chip icon={<SportsTennis />} label="Sport" color="error" />}
-                  {hotel.padel && <Chip icon={<SportsTennis />} label="Pádel" color="info" />}
                 </div>
 
                 <Button variant="contained" color="primary" className="mt-2">
-                  Ver detalles
+                  Reservar
                 </Button>
               </CardContent>
             </Card>
