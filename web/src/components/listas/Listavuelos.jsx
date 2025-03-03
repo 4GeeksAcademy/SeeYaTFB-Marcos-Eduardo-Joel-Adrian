@@ -99,7 +99,6 @@ const ListaVuelos = ({ filters }) => {
                 </CardContent>
                 <CardActions>
                   <Button onClick={()=>{
-                    console.log(vuelo)
                     addToFavorites(vuelo.id,vuelo.name,"Flight")
                   }} variant="contained" color="primary" fullWidth>
                     Reservar ✈️
