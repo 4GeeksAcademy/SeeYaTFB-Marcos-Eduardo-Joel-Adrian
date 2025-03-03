@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Button, Card, CardContent, Input, Typography, CircularProgress, Alert, Chip } from "@mui/material";
 import { Wifi, LocalParking, Spa, SportsGolf, SportsTennis, Star } from "@mui/icons-material";
+import { baseUrl } from "../../services/api/config";
 
 
 const HotelesLista = () => {
@@ -10,7 +11,7 @@ const HotelesLista = () => {
 
   useEffect(() => {
       fetch(
-        `https://bug-free-space-bassoon-pjpjpx696569hrqqx-5000.app.github.dev/hotels`,
+        `${baseUrl}/hotels`,
         {
           method: "GET",
         },

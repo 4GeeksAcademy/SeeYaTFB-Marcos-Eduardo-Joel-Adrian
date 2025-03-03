@@ -256,16 +256,17 @@ def create_company():
     return jsonify({'message': 'Company created'}), 201
     
 
-@app.route('/favorites', methods=['GET'])
+@app.route('/favourites', methods=['GET'])
 @jwt_required()
 def get_favorites():
     user_id=get_jwt_identity()
     favorites = Favourite.query.filter_by(user_id=user_id).all()
     return jsonify(favorites), 200
 
-@app.route('/favorites', methods=['POST'])
+@app.route('/favourites', methods=['POST'])
 @jwt_required()
-def add_favorite(user_id):
+def add_favorite():
+    user_id=get_jwt_identity()
     data = request.get_json()
     required_fields = ["name", "type", "external_id"]
     if not all(field in data for field in required_fields):
@@ -281,10 +282,14 @@ def add_favorite(user_id):
     db.session.commit()
     return jsonify(new_favorite), 201
 
-@app.route('/favorites/<int:id>', methods=['DELETE'])
+@app.route('/favourites/<int:id>', methods=['DELETE'])
 @jwt_required()
 def delete_favorite(id):
-    favorite = Favourite.query.get(id)
+    user_id=get_jwt_identity()
+    data = request.get_json()
+    favorite = Favourite.query.filter_by(
+            id=data["id"], user_id=user_id
+        ).first()
     if not favorite:
         return jsonify({"error": "Favorite not found"}), 404
     db.session.delete(favorite)

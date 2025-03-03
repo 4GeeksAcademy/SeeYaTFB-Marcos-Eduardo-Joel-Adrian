@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+
 import {
   Box,
   Typography,
@@ -16,11 +17,13 @@ import WifiIcon from "@mui/icons-material/Wifi";
 import PetsIcon from "@mui/icons-material/Pets";
 import LuggageIcon from "@mui/icons-material/Luggage";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+
 import { baseUrl } from "../../services/api/config";
+import { FavoritesContext } from "../../context/Booking"; 
 
 const ListaVuelos = ({ filters }) => {
   const [vuelos, setVuelos] = useState([]);
-  
+  const {addToFavorites}=useContext(FavoritesContext)
 
   useEffect(() => {
     fetch(
@@ -68,7 +71,10 @@ const ListaVuelos = ({ filters }) => {
                   </Typography>
                 </CardContent>
                 <CardActions>
-                  <Button variant="contained" color="primary" fullWidth>
+                  <Button onClick={()=>{
+                    console.log(vuelo)
+                    addToFavorites(vuelo.id,vuelo.name,"Flight")
+                  }} variant="contained" color="primary" fullWidth>
                     Reservar ✈️
                   </Button>
                 </CardActions>
