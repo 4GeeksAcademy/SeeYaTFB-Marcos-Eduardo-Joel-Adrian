@@ -4,12 +4,13 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { useContext } from 'react';
 import { UserContext } from '../context/User';
+import { useNavigate } from 'react-router';
 
 
 
 const Homepage = () => {
     const {user}=useContext(UserContext)
-    
+    const navigate=useNavigate()
 
     return (
         <><Container sx={{ bgcolor: '#2196f3', maxWidth: '100% !important', padding: 5 }}>
@@ -66,6 +67,7 @@ const Homepage = () => {
 
             <Box sx={{ display: "flex", justifyContent: "center", marginTop: 3 }}>
                 <Button 
+                    onClick={()=>navigate("/login")}
                     variant="contained" 
                     sx={{
                         backgroundColor: "white",

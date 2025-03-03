@@ -4,13 +4,16 @@ import './index.css'
 import App from './App.jsx'
 import { UserProvider } from "./context/User";
 import { BrowserRouter } from 'react-router';
+import { FavoritesProvider } from './context/Booking.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-     <UserProvider>
+      <UserProvider>
+        <FavoritesProvider>
           <App />
+        </FavoritesProvider>
       </UserProvider>
-      </BrowserRouter>
+    </BrowserRouter>
   </StrictMode>
 )
