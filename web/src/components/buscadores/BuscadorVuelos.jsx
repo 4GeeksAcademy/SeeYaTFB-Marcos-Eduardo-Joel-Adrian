@@ -1,50 +1,28 @@
-import React, { useState } from "react";
+import React from "react";
 import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  Grid,
-  Card,
-  CardContent,
-  InputAdornment
+  Box, Typography, TextField, Button, FormControl, InputLabel, Select, MenuItem,
+  FormControlLabel, Radio, RadioGroup, Grid, Card, CardContent, InputAdornment
 } from "@mui/material";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import FlightLandIcon from "@mui/icons-material/FlightLand";
 import BusinessIcon from "@mui/icons-material/Business";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import WifiIcon from "@mui/icons-material/Wifi";
 import PetsIcon from "@mui/icons-material/Pets";
 import LuggageIcon from "@mui/icons-material/Luggage";
 
-const BuscadorVuelos = () => {
-  const [filters, setFilters] = useState({
-    origin_city: "",
-    destiny_city: "",
-    company: "",
-    time_departure_min: "",
-    time_departure_max: "",
-    time_arrival_min: "",
-    time_arrival_max: "",
-    wifi: "",
-    pets: "",
-    baggage: "",
-    cost_range: "",
-  });
+const BuscadorVuelos = ({ filters, setFilters }) => {  
+  if (!setFilters) {
+    console.error("ERROR: setFilters no se pasó correctamente a BuscadorVuelos.");
+    return null;
+  }
 
   const handleChange = (event) => {
-    setFilters({ ...filters, [event.target.name]: event.target.value });
+    setFilters((prev) => ({ ...prev, [event.target.name]: event.target.value }));  
   };
 
   const handleSearch = () => {
-    console.log("Filtros aplicados:", filters);
+    console.log("Filtros aplicados:");
+    setFilters(prev => { console.log(prev); return prev; }); 
   };
 
   return (
