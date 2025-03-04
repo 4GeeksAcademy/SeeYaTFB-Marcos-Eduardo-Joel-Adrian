@@ -70,23 +70,6 @@ const BuscadorVuelos = ({ filters, setFilters }) => {
               />
             </Grid>
 
-            {/* Compañía */}
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                name="company"
-                label="Compañía"
-                variant="outlined"
-                onChange={handleChange}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <BusinessIcon color="primary" />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Grid>
 
             {/* Rango de Precio */}
             <Grid item xs={12}>
@@ -96,6 +79,10 @@ const BuscadorVuelos = ({ filters, setFilters }) => {
                   <MenuItem value="0-50">0 - 50€</MenuItem>
                   <MenuItem value="50-100">50 - 100€</MenuItem>
                   <MenuItem value="100-200">100 - 200€</MenuItem>
+                  <MenuItem value="200-500">200 - 500€</MenuItem>
+                  <MenuItem value="500-1000">500 - 1000€</MenuItem>
+                  <MenuItem value="1000-2000">1000 - 2000€</MenuItem>
+
                 </Select>
               </FormControl>
             </Grid>
@@ -181,7 +168,7 @@ const BuscadorVuelos = ({ filters, setFilters }) => {
 
             {/* Botón de búsqueda */}
             <Grid item xs={12} textAlign="center">
-              <Button variant="contained" color="primary" onClick={handleSearch} size="large">
+              <Button variant="contained" sx={{ backgroundColor: "#2c387e", color: "white" }} onClick={handleSearch} size="large">
                 Buscar
               </Button>
             </Grid>

@@ -20,6 +20,7 @@ import { baseUrl } from "../../services/api/config";
 
 const ListaVuelos = ({ filters }) => {
   const [vuelos, setVuelos] = useState([]);
+  const [companies, setCompanies] = useState({});
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -36,26 +37,61 @@ const ListaVuelos = ({ filters }) => {
         const response = await fetch(`${baseUrl}/flights?${queryParams}`);
         let data = await response.json();
 
-        data = data.filter(vuelo =>
-          Object.entries(cleanFilters).every(([key, value]) =>
-            vuelo[key]?.toString().toLowerCase() === value.toString().toLowerCase()
-          )
-        );
+        const convertirAHoras = (hora) => {
+          if (!hora) return null;
+          const [h, m] = hora.split(":").map(Number);
+          return h * 60 + (m || 0);
+        };
+
+        data = data.filter((vuelo) => {
+          return Object.entries(cleanFilters).every(([key, value]) => {
+            if (key === "cost_range") {
+              const [min, max] = value.split("-").map(Number);
+              return vuelo.cost >= min && vuelo.cost <= max;
+            }
+
+            if (key === "time_departure_min")
+              return convertirAHoras(vuelo.time_departure) >= convertirAHoras(value);
+            if (key === "time_departure_max")
+              return convertirAHoras(vuelo.time_departure) <= convertirAHoras(value);
+            if (key === "time_arrival_min")
+              return convertirAHoras(vuelo.time_arrival) >= convertirAHoras(value);
+            if (key === "time_arrival_max")
+              return convertirAHoras(vuelo.time_arrival) <= convertirAHoras(value);
+
+            return vuelo[key]?.toString().toLowerCase().includes(value.toString().toLowerCase());
+          });
+        });
 
         setVuelos(data);
       } catch (error) {
         console.error("Error al obtener vuelos:", error);
-        setVuelos([]); 
+        setVuelos([]);
       } finally {
         setLoading(false);
       }
     };
 
+    const fetchCompanies = async () => {
+      try {
+        const response = await fetch(`${baseUrl}/companies`);
+        const data = await response.json();
+        const companiesMap = data.reduce((acc, company) => {
+          acc[company.id] = company.name;
+          return acc;
+        }, {});
+        setCompanies(companiesMap);
+      } catch (error) {
+        console.error("Error al obtener compañías:", error);
+      }
+    };
+  
+    fetchCompanies();
     fetchVuelos();
   }, [filters]);
 
   return (
-    <Box sx={{ width: "100%", p: 3 }}>
+    <Box sx={{ width: "100%", paddingTop: "24px" }}>
       <Typography variant="h2" textAlign="center" gutterBottom>
         Resultados
       </Typography>
@@ -75,14 +111,14 @@ const ListaVuelos = ({ filters }) => {
               <Card sx={{ p: 2 }}>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
-                    <FlightIcon color="primary" /> {vuelo.company}
+                    <FlightIcon color="primary" /> {companies[vuelo.company_id]  || "Aerolínea desconocida"}
                   </Typography>
                   <Typography>
-                    <FlightTakeoffIcon color="success" /> {vuelo.origin_city} →{" "}
+                    <FlightTakeoffIcon color="success" /> {vuelo.origin_city} <br></br>
                     <FlightLandIcon color="error" /> {vuelo.destiny_city}
                   </Typography>
                   <Typography>
-                    {vuelo.time_departure} - {vuelo.time_arrival}
+                    {vuelo.time_departure}h - {vuelo.time_arrival}h
                   </Typography>
                   <Typography>
                     <AttachMoneyIcon color="warning" /> {vuelo.cost} €
@@ -94,7 +130,11 @@ const ListaVuelos = ({ filters }) => {
                   </Typography>
                 </CardContent>
                 <CardActions>
-                  <Button variant="contained" color="primary" fullWidth>
+                  <Button
+                    variant="contained"
+                    sx={{ backgroundColor: "#2c387e", color: "white" }}
+                    fullWidth
+                  >
                     Reservar
                   </Button>
                 </CardActions>
