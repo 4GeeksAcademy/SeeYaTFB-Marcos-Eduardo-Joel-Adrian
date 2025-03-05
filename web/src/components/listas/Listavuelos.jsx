@@ -1,4 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router";
+import { isEmpty } from "lodash";
 
 import {
   Box,
@@ -20,13 +22,15 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 
 
 import { baseUrl } from "../../services/api/config";
-import { FavoritesContext } from "../../context/Booking"; 
+import { FavoritesContext } from "../../context/Booking";
+import { UserContext } from "../../context/User"; 
 
 const ListaVuelos = ({ filters }) => {
+  const [companies,setCompanies]=useState([])
   const [vuelos, setVuelos] = useState([]);
-
-  const [companies, setCompanies] = useState({});
-  const {addToFavorites}=useContext(FavoritesContext)
+  const { addToFavorites } = useContext(FavoritesContext);
+  const { user } = useContext(UserContext); 
+  const navigate = useNavigate(); 
 
   const [loading, setLoading] = useState(false);
 
@@ -137,12 +141,20 @@ const ListaVuelos = ({ filters }) => {
                   </Typography>
                 </CardContent>
                 <CardActions>
-
-
-                  <Button onClick={()=>{
-                    addToFavorites(vuelo.id,vuelo.name,"Flight")
-                  }} variant="contained" color="primary" fullWidth>
-                    Reservar ✈
+                  <Button
+                    onClick={() => {
+                      if (isEmpty(user)) {
+                        alert("Debes iniciar sesión para reservar un vuelo."); 
+                        navigate("/login");
+                      } else {
+                        addToFavorites(vuelo.id, vuelo.name, "Flight");
+                      }
+                    }}
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                  >
+                    Reservar ✈️
                   </Button>
                 </CardActions>
               </Card>

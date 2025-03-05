@@ -6,8 +6,6 @@ import BusinessIcon from "@mui/icons-material/Business";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import LocalGasStationIcon from "@mui/icons-material/LocalGasStation";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
 import SecurityIcon from "@mui/icons-material/Security";
 import { baseUrl } from "../../services/api/config";
@@ -15,6 +13,8 @@ import { baseUrl } from "../../services/api/config";
 const ListaCoches = ({ filters }) => {
   const [coches, setCoches] = useState([]);
   const [loading, setLoading] = useState(false);
+  const {addToFavorites}=useContext(FavoritesContext)
+  
 
   useEffect(() => {
     const fetchCoches = async () => {
@@ -28,7 +28,20 @@ const ListaCoches = ({ filters }) => {
         console.log("URL de la petición:", `${baseUrl}/cars?${queryParams}`);
 
         const response = await fetch(`${baseUrl}/cars?${queryParams}`);
-        const data = await response.json();
+        let data = await response.json();
+
+        // Aplica los filtros en el frontend si es necesario
+        data = data.filter((coche) => {
+          return Object.entries(cleanFilters).every(([key, value]) => {
+            if (key === "cost") return coche.cost <= parseInt(value);
+            if (key === "punctuation") return coche.punctuation >= parseInt(value);
+            if (key === "automatic") return coche.automatic === (value === "true");
+            if (key === "airport_take") return coche.airport_take === (value === "true");
+            if (key === "guarantee") return coche.guarantee === (value === "true");
+            if (key === "insurance") return coche.insurance === (value === "true");
+            return coche[key]?.toString().toLowerCase().includes(value.toString().toLowerCase());
+          });
+        });
 
         setCoches(data);
       } catch (error) {
@@ -86,13 +99,11 @@ const ListaCoches = ({ filters }) => {
                   </Typography>
                 </CardContent>
                 <CardActions>
-                  <Button
-                    variant="contained"
-                    sx={{ backgroundColor: "#2c387e", color: "white" }}
-                    fullWidth
-                  >
-                    Reservar
-                  </Button>
+                  <Button onClick={()=>{
+                                      addToFavorites(coche.id,coche.name,"Coches")
+                                    }} variant="contained" color="primary" fullWidth>
+                                      Reservar
+                                    </Button>
                 </CardActions>
               </Card>
             </Grid>
