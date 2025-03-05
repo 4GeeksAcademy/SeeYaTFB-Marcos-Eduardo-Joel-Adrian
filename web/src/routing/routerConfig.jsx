@@ -3,6 +3,7 @@ import { PaginaVuelos } from "../pages/PaginaVuelos";
 import RegisterPage from "../pages/Register";
 import { PaginaHoteles } from "../pages/PaginaHoteles";
 import LoginPage from "../pages/Login";
+import { PaginaCoches } from "../pages/PaginaCoches";
 
 
 
@@ -27,6 +28,9 @@ const routerConfig = [
   },{
     path: "/register",
     element: <RegisterPage />,
+  },{
+    path: "/coches",
+    element: <PaginaCoches />,
   },
 ];
 
