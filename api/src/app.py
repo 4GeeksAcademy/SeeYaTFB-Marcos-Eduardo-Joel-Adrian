@@ -8,6 +8,8 @@ from src.admin import setup_admin
 from src.models import db, User, Vuelos,Hoteles,Coches,Company,Excursiones,Favourite
 from flask_jwt_extended import create_access_token, get_csrf_token, jwt_required, JWTManager, set_access_cookies, unset_jwt_cookies, get_jwt_identity
 from sqlalchemy import or_
+
+import time
 import bcrypt
 
 import cloudinary
@@ -18,39 +20,10 @@ from cloudinary.utils import cloudinary_url
 from dotenv import load_dotenv
 load_dotenv()
 
-cloudinary.config(
-    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
-    api_key=os.getenv("CLOUDINARY_API_KEY"),
-    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
-    secure=True
-)
 
 app = Flask(__name__)
 
-# Ruta para subir imágenes
-@app.route("/upload", methods=["POST"])
-def upload_file():
-    if "file" not in request.files:
-        return jsonify({"error": "No file part"}), 400
-
-    file = request.files["file"]  # Obtener la imagen subida
-
-    if file.filename == "":
-        return jsonify({"error": "No selected file"}), 400
-
-    # Subir imagen a Cloudinary con un nombre único
-    result = cloudinary.uploader.upload(file)
-
-    return jsonify({"url": result["secure_url"]})
-
-if __name__ == "__main__":
-    app.run(debug=True)
-
 app.url_map.strict_slashes = False
-
-if __name__ == "__main__":
-    app.run()
-
 db_url = os.getenv("DATABASE_URL")
 if db_url is not None:
     app.config['SQLALCHEMY_DATABASE_URI'] = db_url
@@ -70,11 +43,25 @@ app.config["JWT_COOKIE_CSRF_PROTECT"] = True
 app.config["JWT_CSRF_IN_COOKIES"] = True
 app.config["JWT_COOKIE_SECURE"] = True 
 
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+    secure=True
+)
+
 jwt = JWTManager(app)
 # Handle/serialize errors like a JSON object
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
     return jsonify(error.to_dict()), error.status_code
+
+start_time = time.time()
+@app.route("/health", methods=["GET"])
+def health_check():
+    users = User.query.all()
+    print(users)
+    return jsonify({"status": "ok", "uptime": round(time.time() - start_time, 2)}), 200
 
 # generate sitemap with all your endpoints
 @app.route('/')
@@ -159,6 +146,11 @@ def logout_with_cookies():
     unset_jwt_cookies(response)
     return response
 
+@app.route('/hotels', methods=['GET'])
+def get_hoteles():
+    all_hoteles = Hoteles.query.all()
+    return jsonify(all_hoteles), 200
+
 @app.route("/hotels", methods=["POST"])
 def create_hotel():
     data = request.get_json()
@@ -184,6 +176,11 @@ def create_hotel():
     db.session.add(new_hotel)
     db.session.commit()
     return jsonify({'message': 'Hotel created', 'hotel_id': new_hotel.id}), 201
+
+@app.route('/flights', methods=['GET'])
+def get_vuelos():
+    all_vuelos = Vuelos.query.all()
+    return jsonify(all_vuelos), 200
 
 @app.route("/flights", methods=["POST"])
 def create_flight():
@@ -211,6 +208,11 @@ def create_flight():
     db.session.add(new_flight)
     db.session.commit()
     return jsonify({'message': 'Flight created'}), 201
+
+@app.route('/cars', methods=['GET'])
+def get_coches():
+    all_coches = Coches.query.all()
+    return jsonify(all_coches), 200
 
 @app.route("/car", methods=["POST"])
 def create_car():
@@ -242,6 +244,10 @@ def create_car():
     db.session.commit()
     return jsonify({'message': 'Car created'}), 201
 
+@app.route('/companies', methods=['GET'])
+def get_companies():
+    all_companies = Company.query.all()
+    return jsonify(all_companies), 200
 
 @app.route("/company", methods=["POST"])
 def create_company():
@@ -256,16 +262,17 @@ def create_company():
     return jsonify({'message': 'Company created'}), 201
     
 
-@app.route('/favorites', methods=['GET'])
+@app.route('/favourites', methods=['GET'])
 @jwt_required()
 def get_favorites():
     user_id=get_jwt_identity()
     favorites = Favourite.query.filter_by(user_id=user_id).all()
     return jsonify(favorites), 200
 
-@app.route('/favorites', methods=['POST'])
+@app.route('/favourites', methods=['POST'])
 @jwt_required()
-def add_favorite(user_id):
+def add_favorite():
+    user_id=get_jwt_identity()
     data = request.get_json()
     required_fields = ["name", "type", "external_id"]
     if not all(field in data for field in required_fields):
@@ -281,36 +288,38 @@ def add_favorite(user_id):
     db.session.commit()
     return jsonify(new_favorite), 201
 
-@app.route('/favorites/<int:id>', methods=['DELETE'])
+@app.route('/favourites/<int:id>', methods=['DELETE'])
 @jwt_required()
 def delete_favorite(id):
-    favorite = Favourite.query.get(id)
+    user_id=get_jwt_identity()
+    data = request.get_json()
+    favorite = Favourite.query.filter_by(
+            id=data["id"], user_id=user_id
+        ).first()
     if not favorite:
         return jsonify({"error": "Favorite not found"}), 404
     db.session.delete(favorite)
     db.session.commit()
     return jsonify({"message": "Favorite deleted successfully"}), 200
 
-@app.route('/hotels', methods=['GET'])
-def get_hoteles():
-    all_hoteles = Hoteles.query.all()
-    return jsonify(all_hoteles), 200
 
 
-@app.route('/flights', methods=['GET'])
-def get_vuelos():
-    all_vuelos = Vuelos.query.all()
-    return jsonify(all_vuelos), 200
 
-@app.route('/cars', methods=['GET'])
-def get_coches():
-    all_coches = Coches.query.all()
-    return jsonify(all_coches), 200
+@app.route("/upload", methods=["POST"])
+def upload_file():
+    if "file" not in request.files:
+        return jsonify({"error": "No file part"}), 400
 
-@app.route('/companies', methods=['GET'])
-def get_companies():
-    all_companies = Company.query.all()
-    return jsonify(all_companies), 200
+    file = request.files["file"]  # Obtener la imagen subida
+
+    if file.filename == "":
+        return jsonify({"error": "No selected file"}), 400
+
+    # Subir imagen a Cloudinary con un nombre único
+    result = cloudinary.uploader.upload(file)
+
+    return jsonify({"url": result["secure_url"]})
+
 
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))

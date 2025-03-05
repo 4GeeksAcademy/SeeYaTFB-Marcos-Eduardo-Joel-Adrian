@@ -22,7 +22,7 @@ class User(db.Model):
 
 class FavoriteTypeEnum(str, Enum):
     Hotels= "Hotel"
-    Flys= "Fly"
+    Flys= "Flight"
     Excursions= "Excursion"
     Cars = "Car"
 
@@ -58,7 +58,7 @@ class Follower(db.Model):
 class Hoteles(db.Model):
     __tablename__ = 'hoteles'
     id: int = db.Column(db.Integer, primary_key=True)
-    name: str = db.Column(db.String(50), nullable=False)
+    name: str = db.Column(db.String(50), nullable=True)
     address: str = db.Column(db.String(50), nullable=False)
     city: str = db.Column(db.String(50), nullable=False)
     country: str = db.Column(db.String(50), nullable=False)
@@ -83,6 +83,7 @@ class Hoteles(db.Model):
 class Vuelos(db.Model):
     __tablename__ = 'vuelos'
     id: int = db.Column(db.Integer, primary_key=True)
+    name: str = db.Column(db.String(50), nullable=True)
     company_id: int = db.Column(db.Integer, ForeignKey('company.id'), nullable=False)
     punctuation: int = db.Column(db.Integer, nullable=False)
     duration: str = db.Column(db.String, nullable=False)
@@ -133,6 +134,7 @@ class Excursiones(db.Model):
 class Coches(db.Model):
     __tablename__ = 'coches'
     id: int = db.Column(db.Integer, primary_key=True)
+    name: str = db.Column(db.String(50), nullable=True)
     company: str = db.Column(db.String(50), nullable=False)
     brand: str = db.Column(db.String(50), nullable=False)
     city: str = db.Column(db.String(50), nullable=False)

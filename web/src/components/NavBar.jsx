@@ -1,32 +1,40 @@
 import * as React from 'react';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+
 import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Button, MenuItem } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AdbIcon from '@mui/icons-material/Adb';
-import isEmpty from 'lodash/isEmpty'; // 
+import CardTravelIcon from '@mui/icons-material/CardTravel';
+import DeleteIcon from '@mui/icons-material/Delete';
+
+import isEmpty from 'lodash/isEmpty';
+
 import { UserContext } from '../context/User';
+import { FavoritesContext } from '../context/Booking';
 
 const pages = [
-  { link: 'Hoteles', href: '/hoteles' },
-  { link: 'Vuelos', href: '/vuelos' },
-  { link: 'Coches', href: '/coches' },
-  { link: 'Excursiones', href: '/excursiones' }
+  { link: 'Hoteles', href: '/hotels' },
+  { link: 'Vuelos', href: '/flights' },
+  { link: 'Coches', href: '/cars' },
 ];
 
 const NavBar = () => {
+  const { favorites, deleteFavorite } = useContext(FavoritesContext);
   const { logout, user } = useContext(UserContext);
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElFavorites, setAnchorElFavorites] = useState(null);
   const navigate = useNavigate();
 
   const handleOpenNavMenu = (event) => setAnchorElNav(event.currentTarget);
   const handleCloseNavMenu = () => setAnchorElNav(null);
+  const handleOpenFavorites = (event) => setAnchorElFavorites(event.currentTarget);
+  const handleCloseFavorites = () => setAnchorElFavorites(null);
 
   return (
     <AppBar position="static" sx={{ backgroundColor: '#2c387e' }}>
       <Container sx={{ minWidth: '100%' }}>
         <Toolbar disableGutters>
-          {/* Logo grande */}
           <Typography
             variant="h6"
             component={Link}
@@ -44,7 +52,6 @@ const NavBar = () => {
             SeeYa!
           </Typography>
 
-          {/* Menú hamburguesa (Móvil) */}
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton onClick={handleOpenNavMenu} color="inherit">
               <MenuIcon />
@@ -65,27 +72,6 @@ const NavBar = () => {
             </Menu>
           </Box>
 
-          {/* Logo pequeño (Móvil) */}
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            component={Link}
-            to="/"
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            SeeYa!
-          </Typography>
-
-          {/* Menú de navegación */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
               <Button key={page.link} component={Link} to={page.href} sx={{ my: 2, color: 'white' }}>
@@ -94,7 +80,33 @@ const NavBar = () => {
             ))}
           </Box>
 
-          {/* Botón de Login/Logout */}
+          {
+            isEmpty(user)?"":<Box sx={{ flexGrow: 0, mr: 2 }}>
+            <IconButton color="inherit" onClick={handleOpenFavorites}>
+              <CardTravelIcon />
+            </IconButton>
+            <Menu
+              anchorEl={anchorElFavorites}
+              open={Boolean(anchorElFavorites)}
+              onClose={handleCloseFavorites}
+            >
+              {!isEmpty(favorites) ? (
+                favorites.map((fav, index) => (
+                  <MenuItem key={index}>
+                    <Typography component={Link} to={fav.href} sx={{ textDecoration: 'none', color: 'inherit', flexGrow: 1 }}>
+                      {fav.name}
+                    </Typography>
+                    <IconButton size="small" color="error" onClick={() => deleteFavorite(fav.external_id,fav.type)}>
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem onClick={handleCloseFavorites}>No hay favoritos</MenuItem>
+              )}
+            </Menu>
+          </Box>
+          }
           <Box sx={{ flexGrow: 0 }}>
             {isEmpty(user) ? (
               <Button

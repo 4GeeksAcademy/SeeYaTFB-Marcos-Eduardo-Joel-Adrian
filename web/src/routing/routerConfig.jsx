@@ -12,11 +12,15 @@ const routerConfig = [
     path: "/",
     element: <Homepage />,
   },{
-    path: "/vuelos",
+    path: "/flights",
     element: <PaginaVuelos />,
   },{
-    path: "/hoteles",
+    path: "/hotels",
     element: <PaginaHoteles />,
+  },
+  ,{
+    path: "/cars",
+    element: "",
   },
   {
     path: "/login",
