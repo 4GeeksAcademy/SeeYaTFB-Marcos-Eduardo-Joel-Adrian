@@ -6,8 +6,6 @@ import BusinessIcon from "@mui/icons-material/Business";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import LocalGasStationIcon from "@mui/icons-material/LocalGasStation";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
 import SecurityIcon from "@mui/icons-material/Security";
 import { baseUrl } from "../../services/api/config";
@@ -28,7 +26,20 @@ const ListaCoches = ({ filters }) => {
         console.log("URL de la petición:", `${baseUrl}/cars?${queryParams}`);
 
         const response = await fetch(`${baseUrl}/cars?${queryParams}`);
-        const data = await response.json();
+        let data = await response.json();
+
+        // Aplica los filtros en el frontend si es necesario
+        data = data.filter((coche) => {
+          return Object.entries(cleanFilters).every(([key, value]) => {
+            if (key === "cost") return coche.cost <= parseInt(value);
+            if (key === "punctuation") return coche.punctuation >= parseInt(value);
+            if (key === "automatic") return coche.automatic === (value === "true");
+            if (key === "airport_take") return coche.airport_take === (value === "true");
+            if (key === "guarantee") return coche.guarantee === (value === "true");
+            if (key === "insurance") return coche.insurance === (value === "true");
+            return coche[key]?.toString().toLowerCase().includes(value.toString().toLowerCase());
+          });
+        });
 
         setCoches(data);
       } catch (error) {
@@ -62,6 +73,7 @@ const ListaCoches = ({ filters }) => {
             <Grid item xs={12} sm={6} md={4} key={coche.id}>
               <Card sx={{ p: 2 }}>
                 <CardContent>
+                  <img src={coche.photo || "No Photo"} style={{ width: "100%", height: "200px", objectFit: "cover", borderRadius: "8px" }} />
                   <Typography variant="h6" gutterBottom>
                     <BusinessIcon color="primary" /> {coche.company || "Empresa desconocida"}
                   </Typography>
