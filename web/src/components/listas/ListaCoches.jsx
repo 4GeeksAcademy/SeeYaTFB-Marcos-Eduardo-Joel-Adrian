@@ -13,6 +13,8 @@ import { baseUrl } from "../../services/api/config";
 const ListaCoches = ({ filters }) => {
   const [coches, setCoches] = useState([]);
   const [loading, setLoading] = useState(false);
+  const {addToFavorites}=useContext(FavoritesContext)
+  
 
   useEffect(() => {
     const fetchCoches = async () => {
@@ -97,13 +99,11 @@ const ListaCoches = ({ filters }) => {
                   </Typography>
                 </CardContent>
                 <CardActions>
-                  <Button
-                    variant="contained"
-                    sx={{ backgroundColor: "#2c387e", color: "white" }}
-                    fullWidth
-                  >
-                    Reservar
-                  </Button>
+                  <Button onClick={()=>{
+                                      addToFavorites(coche.id,coche.name,"Coches")
+                                    }} variant="contained" color="primary" fullWidth>
+                                      Reservar
+                                    </Button>
                 </CardActions>
               </Card>
             </Grid>
