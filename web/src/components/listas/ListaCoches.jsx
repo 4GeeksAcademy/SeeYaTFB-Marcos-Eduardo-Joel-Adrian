@@ -62,6 +62,7 @@ const ListaCoches = ({ filters }) => {
             <Grid item xs={12} sm={6} md={4} key={coche.id}>
               <Card sx={{ p: 2 }}>
                 <CardContent>
+                  <img src={coche.photo || "No Photo"} style={{ width: "100%", height: "200px", objectFit: "cover", borderRadius: "8px" }} />
                   <Typography variant="h6" gutterBottom>
                     <BusinessIcon color="primary" /> {coche.company || "Empresa desconocida"}
                   </Typography>
