@@ -48,10 +48,12 @@ const RegisterPage = () => {
     event.preventDefault();
     setLoading(true);
     setError("");
-
-    register(formData.username,formData.email,formData.password,formData.first_name,formData.last_name,formData.country,formData.city,formData.address,formData.phone_number,formData.photo);
-  
-    setLoading(false);
+    if (photo==null)
+      return register(formData.username,formData.email,formData.password,formData.first_name,formData.last_name,formData.country,formData.city,formData.address,formData.phone_number,formData.photo);
+    else
+        return uploadPhoto(photo).then((data)=>{
+          register(formData.username,formData.email,formData.password,formData.first_name,formData.last_name,formData.country,formData.city,formData.address,formData.phone_number,data)
+        })
   };
 
   return (

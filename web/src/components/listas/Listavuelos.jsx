@@ -25,6 +25,7 @@ import { FavoritesContext } from "../../context/Booking";
 import { UserContext } from "../../context/User"; 
 
 const ListaVuelos = ({ filters }) => {
+  const [companies,setCompanies]=useState([])
   const [vuelos, setVuelos] = useState([]);
   const { addToFavorites } = useContext(FavoritesContext);
   const { user } = useContext(UserContext); 

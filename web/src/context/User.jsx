@@ -1,7 +1,6 @@
 import { createContext, useState } from "react";
 import { baseUrl } from "../services/api/config";
 import { useNavigate } from "react-router";
-import { uploadPhoto } from "../services/api/config";
 
 
 export const UserContext = createContext({
@@ -64,10 +63,11 @@ export const UserProvider = ({ children }) => {
           photo: photo, 
         }),
       })
-      .then((res) => {res.json()})
+      .then((res) => res.json())
       .then((data) => {
+      setUser(data.user)
       alert("Cambios realizados correctamente")
-      setUser(data)
+      navigate("/")
     });
   };
   
@@ -111,7 +111,7 @@ export const UserProvider = ({ children }) => {
         city: city,
         address: address,
         phone_number: phone_number,
-        photo: photo ? photo.name : null, // Assuming photo is a file object
+        photo: photo,
       }),
     })
     .then((res) => res.json())

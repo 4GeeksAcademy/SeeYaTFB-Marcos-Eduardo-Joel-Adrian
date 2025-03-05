@@ -106,9 +106,13 @@ def edit_user():
     existing_user.phone_number = data.get("phone_number", existing_user.phone_number)
     existing_user.photo = data.get("photo", existing_user.photo)
 
+    user1 = User.query.filter_by(email=data.get("email")).first()
     try:
         db.session.commit()
-        return jsonify({"message": "User updated successfully"}), 200
+        return jsonify({
+            "message": "User updated successfully",
+            "user": user1,
+}), 200
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "Database error", "details": str(e)}), 500

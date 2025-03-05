@@ -14,6 +14,7 @@ import {
 import { UserContext } from "../context/User";
 import PersonIcon from "@mui/icons-material/Person";
 import { uploadPhoto } from "../services/api/config";
+import { isEmpty } from "lodash";
 
 const ProfilePage = () => {
   const { user, editUser } = useContext(UserContext);
@@ -48,6 +49,9 @@ const ProfilePage = () => {
   const handleSubmit = async (event) => {
     setLoading(true);
     setError("");
+    isEmpty(photo)?
+    editUser(username, email, first_name, last_name, country, city, address, phone_number)
+    :
     uploadPhoto(photo).then((data)=>{
       editUser(username, email, first_name, last_name, country, city, address, phone_number, data);
      })
