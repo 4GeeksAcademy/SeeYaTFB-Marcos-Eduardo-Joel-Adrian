@@ -17,19 +17,14 @@ const routerConfig = [
   },{
     path: "/hotels",
     element: <PaginaHoteles />,
-  },
-  ,{
-    path: "/cars",
-    element: "",
-  },
-  {
+  },{
     path: "/login",
     element: <LoginPage />,
   },{
     path: "/register",
     element: <RegisterPage />,
   },{
-    path: "/coches",
+    path: "/cars",
     element: <PaginaCoches />,
   },
 ];
