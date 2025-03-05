@@ -18,6 +18,7 @@ import PetsIcon from "@mui/icons-material/Pets";
 import LuggageIcon from "@mui/icons-material/Luggage";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 
+
 import { baseUrl } from "../../services/api/config";
 import { FavoritesContext } from "../../context/Booking"; 
 
