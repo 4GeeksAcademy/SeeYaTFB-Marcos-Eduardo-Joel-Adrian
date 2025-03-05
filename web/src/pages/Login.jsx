@@ -37,8 +37,13 @@ const Login = () => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        flexDirection: "column",
       }}
     >
+      <Typography variant="h3" sx={{ fontWeight: "bold", color: "white", mb: 8, textAlign: "center" }}>
+        ¡Regístrate para empezar a viajar! ✈️🌍
+      </Typography>
+
       <Container maxWidth="xs">
         <Paper elevation={6} sx={{ p: 4, borderRadius: 3, textAlign: "center" }}>
           <Avatar sx={{ m: "auto", bgcolor: "primary.main" }}>
