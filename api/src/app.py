@@ -80,6 +80,45 @@ def get_single_user(user_id):
     if not user:
         return jsonify({"error": "User not found"}), 404
     return jsonify(user), 200
+    
+
+@app.route("/users", methods=["PUT"])
+@jwt_required()
+def edit_user():
+    user_id = get_jwt_identity()  # ID del usuario autenticado
+
+    existing_user = db.session.query(User).filter(User.id == user_id).first()
+    if not existing_user:
+        return jsonify({"error": "User not found"}), 404
+
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "Invalid input"}), 400
+
+    # Actualizar datos si están presentes en la petición
+    existing_user.username = data.get("username", existing_user.username)
+    existing_user.email = data.get("email", existing_user.email)
+    existing_user.first_name = data.get("first_name", existing_user.first_name)
+    existing_user.last_name = data.get("last_name", existing_user.last_name)
+    existing_user.country = data.get("country", existing_user.country)
+    existing_user.city = data.get("city", existing_user.city)
+    existing_user.address = data.get("address", existing_user.address)
+    existing_user.phone_number = data.get("phone_number", existing_user.phone_number)
+    existing_user.photo = data.get("photo", existing_user.photo)
+
+    user1 = User.query.filter_by(email=data.get("email")).first()
+    try:
+        db.session.commit()
+        return jsonify({
+            "message": "User updated successfully",
+            "user": user1,
+}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Database error", "details": str(e)}), 500
+
+
+
 
 @app.route("/register", methods=["POST"])
 def register():
@@ -176,6 +215,8 @@ def create_hotel():
     db.session.add(new_hotel)
     db.session.commit()
     return jsonify({'message': 'Hotel created', 'hotel_id': new_hotel.id}), 201
+
+
 
 @app.route('/flights', methods=['GET'])
 def get_vuelos():

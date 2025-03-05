@@ -2,9 +2,8 @@ import * as React from 'react';
 import { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Button, MenuItem } from '@mui/material';
+import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Button, MenuItem, Badge, Avatar } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import AdbIcon from '@mui/icons-material/Adb';
 import CardTravelIcon from '@mui/icons-material/CardTravel';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -24,12 +23,15 @@ const NavBar = () => {
   const { logout, user } = useContext(UserContext);
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElFavorites, setAnchorElFavorites] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
   const navigate = useNavigate();
 
   const handleOpenNavMenu = (event) => setAnchorElNav(event.currentTarget);
   const handleCloseNavMenu = () => setAnchorElNav(null);
   const handleOpenFavorites = (event) => setAnchorElFavorites(event.currentTarget);
   const handleCloseFavorites = () => setAnchorElFavorites(null);
+  const handleOpenUserMenu = (event) => setAnchorElUser(event.currentTarget);
+  const handleCloseUserMenu = () => setAnchorElUser(null);
 
   return (
     <AppBar position="static" sx={{ backgroundColor: '#2c387e' }}>
@@ -79,53 +81,48 @@ const NavBar = () => {
               </Button>
             ))}
           </Box>
+          
+          {!isEmpty(user) && (
+            <Box sx={{ flexGrow: 0, mr: 2 }}>
+              <IconButton color="inherit" onClick={handleOpenFavorites}>
+                <Badge badgeContent={favorites.length}>
+                  <CardTravelIcon />
+                </Badge>
+              </IconButton>
 
-          {
-            isEmpty(user)?"":<Box sx={{ flexGrow: 0, mr: 2 }}>
-            <IconButton color="inherit" onClick={handleOpenFavorites}>
-              <CardTravelIcon />
-            </IconButton>
-            <Menu
-              anchorEl={anchorElFavorites}
-              open={Boolean(anchorElFavorites)}
-              onClose={handleCloseFavorites}
-            >
-              {!isEmpty(favorites) ? (
-                favorites.map((fav, index) => (
-                  <MenuItem key={index}>
-                    <Typography component={Link} to={fav.href} sx={{ textDecoration: 'none', color: 'inherit', flexGrow: 1 }}>
-                      {fav.name}
-                    </Typography>
-                    <IconButton size="small" color="error" onClick={() => deleteFavorite(fav.external_id,fav.type)}>
-                      <DeleteIcon fontSize="small" />
-                    </IconButton>
-                  </MenuItem>
-                ))
-              ) : (
-                <MenuItem onClick={handleCloseFavorites}>No hay favoritos</MenuItem>
-              )}
-            </Menu>
-          </Box>
-          }
+              <Menu anchorEl={anchorElFavorites} open={Boolean(anchorElFavorites)} onClose={handleCloseFavorites}>
+                {!isEmpty(favorites) ? (
+                  favorites.map((fav, index) => (
+                    <MenuItem key={index}>
+                      <Typography component={Link} to={fav.href} sx={{ textDecoration: 'none', color: 'inherit', flexGrow: 1 }}>
+                        {fav.name}
+                      </Typography>
+                      <IconButton size="small" color="error" onClick={() => deleteFavorite(fav.external_id, fav.type)}>
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem onClick={handleCloseFavorites}>No hay favoritos</MenuItem>
+                )}
+              </Menu>
+            </Box>
+          )}
+          
           <Box sx={{ flexGrow: 0 }}>
-            {isEmpty(user) ? (
-              <Button
-                variant="contained"
-                sx={{ backgroundColor: "#00b0ff" }}
-                onClick={() => navigate("/login")}
-              >
-                Login
-              </Button>
+            {!isEmpty(user) ? (
+              <>
+                <IconButton onClick={handleOpenUserMenu} size="small" sx={{ ml: 2 }}>
+                  <Avatar sx={{ width: 32, height: 32 }} src={user.photo} />
+                </IconButton>
+                <Menu anchorEl={anchorElUser} open={Boolean(anchorElUser)} onClose={handleCloseUserMenu}>
+                  <MenuItem onClick={handleCloseUserMenu} component={Link} to="/profile">Perfil</MenuItem>
+                  <MenuItem onClick={() => { logout(); handleCloseUserMenu(); }}>Logout</MenuItem>
+                </Menu>
+              </>
             ) : (
-              <Button
-                variant="contained"
-                color="error"
-                onClick={(event) => {
-                  event.preventDefault();
-                  logout();
-                }}
-              >
-                Logout
+              <Button variant="contained" sx={{ backgroundColor: "#00b0ff" }} onClick={() => navigate("/login")}>
+                Login
               </Button>
             )}
           </Box>
