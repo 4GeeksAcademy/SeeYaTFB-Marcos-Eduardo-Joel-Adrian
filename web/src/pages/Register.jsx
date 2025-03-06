@@ -13,12 +13,10 @@ import {
 } from "@mui/material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { UserContext } from "../context/User";
-
+import { uploadPhoto } from "../services/api/config";
 
 const RegisterPage = () => {
-
-  
-  const {register}= useContext(UserContext)
+  const { register } = useContext(UserContext);
   const [formData, setFormData] = useState({
     username: "",
     first_name: "",
@@ -33,7 +31,6 @@ const RegisterPage = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  
 
   const handleChange = (event) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
@@ -48,12 +45,40 @@ const RegisterPage = () => {
     event.preventDefault();
     setLoading(true);
     setError("");
-    if (photo==null)
-      return register(formData.username,formData.email,formData.password,formData.first_name,formData.last_name,formData.country,formData.city,formData.address,formData.phone_number,formData.photo);
-    else
-        return uploadPhoto(photo).then((data)=>{
-          register(formData.username,formData.email,formData.password,formData.first_name,formData.last_name,formData.country,formData.city,formData.address,formData.phone_number,data)
-        })
+
+    // Validación de campos obligatorios
+    const requiredFields = ["username", "first_name", "email", "password", "country", "city", "address", "phone_number"];
+    for (let field of requiredFields) {
+      if (!formData[field]) {
+        setError("Por favor, completa todos los campos obligatorios.");
+        setLoading(false);
+        return;
+      }
+    }
+
+    try {
+      let photoUrl = null;
+      if (formData.photo) {
+        photoUrl = await uploadPhoto(formData.photo);
+      }
+
+      await register(
+        formData.username,
+        formData.email,
+        formData.password,
+        formData.first_name,
+        formData.last_name,
+        formData.country,
+        formData.city,
+        formData.address,
+        formData.phone_number,
+        photoUrl
+      );
+    } catch (err) {
+      setError(err.message || "Error al registrarse. Inténtalo nuevamente.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -66,44 +91,40 @@ const RegisterPage = () => {
         justifyContent: "center",
       }}
     >
-      <Container maxWidth="sm" sx={{marginTop: 4, marginBottom: 4}}>
+      <Container maxWidth="sm" sx={{ mt: 4, mb: 4 }}>
         <Paper elevation={6} sx={{ p: 4, borderRadius: 3, textAlign: "center" }}>
           <Avatar sx={{ m: "auto", bgcolor: "primary.main" }}>
             <PersonAddIcon />
           </Avatar>
           <Typography variant="h5" sx={{ mt: 2, mb: 3 }}>
-            Crea tu cuenta y empieza a viajar
+            Crea tu cuenta y empieza a viajar ✈️🌍
           </Typography>
 
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="Usuario" name="username" required onChange={handleChange} />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="Nombre" name="first_name" required onChange={handleChange} />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="Apellidos" name="last_name" onChange={handleChange} />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="Correo" type="email" name="email" required onChange={handleChange} />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField fullWidth label="Contraseña" type="password" name="password" required onChange={handleChange} />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="País" name="country" required onChange={handleChange} />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="Ciudad" name="city" required onChange={handleChange} />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField fullWidth label="Dirección" name="address" required onChange={handleChange} />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField fullWidth label="Teléfono" name="phone_number" type="tel" required onChange={handleChange} />
-              </Grid>
+              {[
+                { label: "Usuario", name: "username" },
+                { label: "Nombre", name: "first_name" },
+                { label: "Apellidos", name: "last_name" },
+                { label: "Correo", name: "email", type: "email" },
+                { label: "Contraseña", name: "password", type: "password" },
+                { label: "País", name: "country" },
+                { label: "Ciudad", name: "city" },
+                { label: "Dirección", name: "address" },
+                { label: "Teléfono", name: "phone_number", type: "tel" },
+              ].map((field, index) => (
+                <Grid item xs={12} sm={field.name === "address" || field.name === "phone_number" ? 12 : 6} key={index}>
+                  <TextField
+                    fullWidth
+                    label={field.label}
+                    name={field.name}
+                    type={field.type || "text"}
+                    required
+                    onChange={handleChange}
+                  />
+                </Grid>
+              ))}
+
               <Grid item xs={12}>
                 <Typography variant="body1">Foto de Perfil:</Typography>
                 <Input type="file" accept="image/*" onChange={handlePhotoChange} fullWidth />
