@@ -1,20 +1,20 @@
-import { useState, useEffect, useMemo,useContext } from "react";
-import { Button, Card, CardContent, Input, Typography, CircularProgress, Alert, Chip } from "@mui/material";
+import { useState, useEffect, useMemo, useContext } from "react";
+import {
+  Button, Card, CardContent, Typography, CircularProgress, Chip, TextField, Box, Grid
+} from "@mui/material";
 import { Wifi, LocalParking, Spa, SportsGolf, SportsTennis, Star } from "@mui/icons-material";
 import { baseUrl } from "../../services/api/config";
 import { FavoritesContext } from "../../context/Booking";
+import { UserContext } from "../../context/User";
+import { useNavigate } from "react-router";
+import { isEmpty } from "lodash";
 
-const HotelesLista = ({ filters }) => { // ✅ Ahora recibe los filtros correctamente
+const HotelesLista = ({ filters }) => { 
   const [hotels, setHotels] = useState([]);
-  const [search, setSearch] = useState("");
-  const {addToFavorites}= useContext(FavoritesContext)
- useEffect(() => {
-    fetch(
-      `${baseUrl}/hotels`,
-      {
-        method: "GET",
-      },
-    )
+  const [loading, setLoading] = useState(true);
+  const {addToFavorites} = useContext(FavoritesContext)
+  useEffect(() => {
+    fetch(`${baseUrl}/hotels`)
       .then((res) => res.json())
       .then((response) => {
         setHotels(response);
@@ -23,7 +23,6 @@ const HotelesLista = ({ filters }) => { // ✅ Ahora recibe los filtros correcta
       .finally(() => setLoading(false));
   }, []);
 
-  // ✅ Filtrar hoteles según los filtros
   const filteredHotels = useMemo(() => {
     return hotels.filter((hotel) => {
       const matchesName = hotel.name.toLowerCase().includes(filters.company.toLowerCase());
@@ -36,6 +35,9 @@ const HotelesLista = ({ filters }) => { // ✅ Ahora recibe los filtros correcta
     });
   }, [filters, hotels]);
 
+    const { user } = useContext(UserContext);
+    const navigate = useNavigate();
+  
   return (
     <Box sx={{ maxWidth: "1200px", margin: "0 auto", padding: "20px" }}>
       <Typography variant="h2" textAlign="center" gutterBottom>
@@ -88,9 +90,14 @@ const HotelesLista = ({ filters }) => { // ✅ Ahora recibe los filtros correcta
                       {hotel.sports && <Chip icon={<SportsTennis />} label="Deportes" color="error" />}
                     </Box>
 
-                    <Button  onClick={()=>
-                      addToFavorites(hotel.id,hotel.name,"Hotel")
-                    } variant="contained" color="primary" sx={{ marginTop: 2, width: "100%" }}>
+                    <Button onClick={() => {
+                      if (isEmpty(user)) {
+                        alert("Debes iniciar sesión para reservar un hotel."); 
+                        navigate("/login");
+                      } else {
+                        addToFavorites(hotel.id, hotel.name, "Hotel");
+                      }
+                    }}variant="contained" color="primary" sx={{ marginTop: 2, width: "100%" }}>
                       Reservar
                     </Button>
                   </CardContent>

@@ -8,14 +8,17 @@ import LocalGasStationIcon from "@mui/icons-material/LocalGasStation";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
 import SecurityIcon from "@mui/icons-material/Security";
-
+import { useNavigate } from "react-router";
+import { isEmpty } from "lodash";
 import { baseUrl } from "../../services/api/config";
 import { FavoritesContext } from "../../context/Booking";
+import { UserContext } from "../../context/User";
 
 
 const ListaCoches = ({ filters }) => {
   const [coches, setCoches] = useState([]);
   const [loading, setLoading] = useState(false);
+  const {addToFavorites} = useContext(FavoritesContext)
 
   useEffect(() => {
     const fetchCoches = async () => {
@@ -55,6 +58,9 @@ const ListaCoches = ({ filters }) => {
 
     fetchCoches();
   }, [filters]);
+
+  const { user } = useContext(UserContext);
+  const navigate = useNavigate();
 
   return (
     <Box sx={{ width: "95%", paddingTop: "24px" }}>
@@ -101,8 +107,13 @@ const ListaCoches = ({ filters }) => {
                 </CardContent>
                 <CardActions>
                   <Button
-                  onClick={()=>{
-                    addToFavorites(coche.id,coche.name,"Car")
+                  onClick={() => {
+                    if (isEmpty(user)) {
+                      alert("Debes iniciar sesión para reservar un coche."); 
+                      navigate("/login");
+                    } else {
+                      addToFavorites(coche.id, coche.name, "Car");
+                    }
                   }}
                     variant="contained"
                     sx={{ backgroundColor: "#2c387e", color: "white" }}

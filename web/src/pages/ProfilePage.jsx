@@ -10,6 +10,8 @@ import {
   CircularProgress,
   Grid,
   Input,
+  Card,
+  CardContent,
 } from "@mui/material";
 import { UserContext } from "../context/User";
 import PersonIcon from "@mui/icons-material/Person";
@@ -45,17 +47,31 @@ const ProfilePage = () => {
     }
   }, [user]);
 
+  const handlePhotoChange = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const allowedTypes = ["image/jpeg", "image/png"];
+    if (!allowedTypes.includes(file.type)) {
+      alert("❌ Formato no permitido. Solo se aceptan archivos .jpg y .png");
+      return;
+    }
+
+    setPhoto(file);
+  };
+
   const handleSubmit = async (event) => {
     setLoading(true);
     setError("");
-    photo==null?
-    editUser(username, email, first_name, last_name, country, city, address, phone_number)
-    :
-    uploadPhoto(photo).then((data)=>{
-      user.photo = null
-      editUser(username, email, first_name, last_name, country, city, address, phone_number, data);
-     })
-    
+    if (photo == null) {
+      editUser(username, email, first_name, last_name, country, city, address, phone_number);
+    } else {
+      uploadPhoto(photo).then((data) => {
+        user.photo = null;
+        editUser(username, email, first_name, last_name, country, city, address, phone_number, data);
+      });
+    }
+
     setLoading(false);
   };
 
@@ -70,13 +86,21 @@ const ProfilePage = () => {
       }}
     >
       <Container maxWidth="sm" sx={{ marginTop: 4, marginBottom: 4 }}>
-        <Paper elevation={6} sx={{ p: 4, borderRadius: 3, textAlign: "center" }}>
-          <Avatar sx={{ m: "auto", bgcolor: "primary.main" }}>
-            <PersonIcon />
-          </Avatar>
-          <Typography variant="h5" sx={{ mt: 2, mb: 3 }}>
-            Editar perfil
-          </Typography>
+        <Card elevation={6} sx={{ p: 4, borderRadius: 3, textAlign: "center" }}>
+          <CardContent>
+            <Avatar
+              sx={{
+                width: 100,
+                height: 100,
+                border: "4px solid white",
+                m: "auto",
+                mb: 2,
+              }}
+              src={user?.photo || "/default-avatar.png"} // Foto de perfil predeterminada si no hay foto
+            />
+            <Typography variant="h5" sx={{ mt: 2, mb: 3 }}>
+              Editar perfil
+            </Typography>
 
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
@@ -156,8 +180,8 @@ const ProfilePage = () => {
                 <Typography variant="body1">Foto de Perfil:</Typography>
                 <Input
                   type="file"
-                  accept="image/*"
-                  onChange={(e) => setPhoto(e.target.files[0])}
+                  accept=".jpg, .jpeg, .png"
+                  onChange={handlePhotoChange}
                   fullWidth
                 />
               </Grid>
@@ -175,12 +199,12 @@ const ProfilePage = () => {
               color="primary"
               sx={{ mt: 3, mb: 2 }}
               disabled={loading}
-              onClick={()=>handleSubmit()}
+              onClick={handleSubmit}
             >
               {loading ? <CircularProgress size={24} /> : "Actualizar Perfil"}
             </Button>
-         
-        </Paper>
+          </CardContent>
+        </Card>
       </Container>
     </Box>
   );

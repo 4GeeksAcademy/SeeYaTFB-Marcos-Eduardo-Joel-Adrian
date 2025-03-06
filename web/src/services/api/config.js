@@ -1,6 +1,5 @@
 export const baseUrl = "/api";
 
-// subir fotos a cloudinary
 export const uploadPhoto= async (photo)=>{
     const formData = new FormData();
     formData.append("file", photo);

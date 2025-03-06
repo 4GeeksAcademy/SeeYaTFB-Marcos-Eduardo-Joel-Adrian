@@ -38,15 +38,23 @@ const RegisterPage = () => {
 
   const handlePhotoChange = (event) => {
     const file = event.target.files[0];
+    if (!file) return;
+  
+    const allowedTypes = ["image/jpeg", "image/png"];
+    if (!allowedTypes.includes(file.type)) {
+      alert("Solo se permiten archivos .jpg y .png");
+      return;
+    }
+  
     setFormData({ ...formData, photo: file });
   };
+  
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
     setError("");
 
-    // Validación de campos obligatorios
     const requiredFields = ["username", "first_name", "email", "password", "country", "city", "address", "phone_number"];
     for (let field of requiredFields) {
       if (!formData[field]) {
@@ -127,7 +135,7 @@ const RegisterPage = () => {
 
               <Grid item xs={12}>
                 <Typography variant="body1">Foto de Perfil:</Typography>
-                <Input type="file" accept="image/*" onChange={handlePhotoChange} fullWidth />
+                <Input type="file" accept=".jpg, .png" onChange={handlePhotoChange} fullWidth />
               </Grid>
             </Grid>
 

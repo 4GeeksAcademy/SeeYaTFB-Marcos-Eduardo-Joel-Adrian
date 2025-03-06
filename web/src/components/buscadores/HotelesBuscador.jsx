@@ -16,7 +16,7 @@ const HotelesBuscador = ({ filters, setFilters }) => {
 
     if (name) {
       setFilters((prev) => ({ ...prev, [name]: value }));
-    } else if (Array.isArray(newValue)) { // ✅ Para el Slider
+    } else if (Array.isArray(newValue)) { 
       setFilters((prev) => ({ ...prev, cost_range: newValue }));
     }
   };
