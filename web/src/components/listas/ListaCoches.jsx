@@ -13,8 +13,6 @@ import { baseUrl } from "../../services/api/config";
 const ListaCoches = ({ filters }) => {
   const [coches, setCoches] = useState([]);
   const [loading, setLoading] = useState(false);
-  const {addToFavorites}=useContext(FavoritesContext)
-  
 
   useEffect(() => {
     const fetchCoches = async () => {
@@ -56,7 +54,7 @@ const ListaCoches = ({ filters }) => {
   }, [filters]);
 
   return (
-    <Box sx={{ width: "100%", paddingTop: "24px" }}>
+    <Box sx={{ width: "95%", paddingTop: "24px" }}>
       <Typography variant="h2" textAlign="center" gutterBottom>
         Resultados de coches
       </Typography>
@@ -99,11 +97,13 @@ const ListaCoches = ({ filters }) => {
                   </Typography>
                 </CardContent>
                 <CardActions>
-                  <Button onClick={()=>{
-                                      addToFavorites(coche.id,coche.name,"Coches")
-                                    }} variant="contained" color="primary" fullWidth>
-                                      Reservar
-                                    </Button>
+                  <Button
+                    variant="contained"
+                    sx={{ backgroundColor: "#2c387e", color: "white" }}
+                    fullWidth
+                  >
+                    Reservar
+                  </Button>
                 </CardActions>
               </Card>
             </Grid>

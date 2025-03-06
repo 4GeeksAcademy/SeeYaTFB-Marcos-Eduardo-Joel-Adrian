@@ -1,6 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router";
-import { isEmpty } from "lodash";
 
 import {
   Box,
@@ -20,17 +18,14 @@ import PetsIcon from "@mui/icons-material/Pets";
 import LuggageIcon from "@mui/icons-material/Luggage";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 
-
 import { baseUrl } from "../../services/api/config";
-import { FavoritesContext } from "../../context/Booking";
-import { UserContext } from "../../context/User"; 
+import { FavoritesContext } from "../../context/Booking"; 
 
 const ListaVuelos = ({ filters }) => {
-  const [companies,setCompanies]=useState([])
   const [vuelos, setVuelos] = useState([]);
-  const { addToFavorites } = useContext(FavoritesContext);
-  const { user } = useContext(UserContext); 
-  const navigate = useNavigate(); 
+
+  const [companies, setCompanies] = useState({});
+  const {addToFavorites}=useContext(FavoritesContext)
 
   const [loading, setLoading] = useState(false);
 
@@ -102,7 +97,7 @@ const ListaVuelos = ({ filters }) => {
   }, [filters]);
 
   return (
-    <Box sx={{ width: "100%", paddingTop: "24px" }}>
+    <Box sx={{ width: "95%", paddingTop: "24px" }}>
       <Typography variant="h2" textAlign="center" gutterBottom>
         Resultados
       </Typography>
@@ -141,20 +136,12 @@ const ListaVuelos = ({ filters }) => {
                   </Typography>
                 </CardContent>
                 <CardActions>
-                  <Button
-                    onClick={() => {
-                      if (isEmpty(user)) {
-                        alert("Debes iniciar sesión para reservar un vuelo."); 
-                        navigate("/login");
-                      } else {
-                        addToFavorites(vuelo.id, vuelo.name, "Flight");
-                      }
-                    }}
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                  >
-                    Reservar ✈️
+
+
+                  <Button onClick={()=>{
+                    addToFavorites(vuelo.id,vuelo.name,"Flight")
+                  }} variant="contained" color="primary" fullWidth>
+                    Reservar ✈
                   </Button>
                 </CardActions>
               </Card>
