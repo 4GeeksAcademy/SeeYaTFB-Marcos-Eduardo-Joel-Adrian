@@ -1,188 +1,120 @@
-import React, { useState } from "react";
+import React from "react";
 import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  FormControl,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  Grid,
-  Card,
-  CardContent,
-  InputAdornment,
-  Slider
+  Box, Typography, TextField, Button, FormControl, FormControlLabel,
+  Radio, RadioGroup, Grid, Card, CardContent, InputAdornment, Slider
 } from "@mui/material";
-import HotelIcon from "@mui/icons-material/Hotel";
-import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
-import BusinessIcon from "@mui/icons-material/Business";
-import WifiIcon from "@mui/icons-material/Wifi";
-import PetsIcon from "@mui/icons-material/Pets";
-import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
-import SportsSoccerIcon from "@mui/icons-material/SportsSoccer";
+import { Hotel, MeetingRoom, Business, Wifi, DirectionsCar, SportsSoccer } from "@mui/icons-material";
 
-export default function HotelesBuscador() {
-  const [filters, setFilters] = useState({
-    origin_city: "",
-    destiny_city: "",
-    company: "",
-    wifi: "",
-    pets: "",
-    parking: "",
-    sports: "",
-    cost_range: [0, 5000]
-  });
+const HotelesBuscador = ({ filters, setFilters }) => {
+  if (!setFilters) {
+    console.error("ERROR: setFilters no se pasó correctamente a BuscadorHoteles.");
+    return null;
+  }
 
   const handleChange = (event, newValue) => {
-    if (Array.isArray(newValue)) {
-      setFilters({ ...filters, cost_range: newValue });
-    } else {
-      setFilters({ ...filters, [event.target.name]: event.target.value });
+    const { name, value } = event.target || {};
+
+    if (name) {
+      setFilters((prev) => ({ ...prev, [name]: value }));
+    } else if (Array.isArray(newValue)) { 
+      setFilters((prev) => ({ ...prev, cost_range: newValue }));
     }
   };
 
-  const handleSearch = () => {
-    console.log("Filtros aplicados:", filters);
-  };
-
   return (
-    <Grid container sx={{ height: "100vh" }} justifyContent="flex-start" alignItems="center">
-      <Grid item xs={6} sx={{ display: "flex", justifyContent: "center" }}>
-        <Box sx={{ width: 600, ml: "10%" }}>
-          <Typography variant="h2" textAlign="center" gutterBottom>
-            Buscar Hoteles
-          </Typography>
+    <Box sx={{ width: "95%", p: 4, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <Box sx={{ width: "95%", maxWidth: 800 }}>
+        <Typography variant="h3" textAlign="center" gutterBottom>
+          Buscar Hoteles
+        </Typography>
 
-          <Card>
-            <CardContent>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    name="arrival_day"
-                    label="Día de llegada"
-                    variant="outlined"
-                    onChange={handleChange}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <HotelIcon color="primary" />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    name="destiny_city"
-                    label="Día de salida"
-                    variant="outlined"
-                    onChange={handleChange}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <MeetingRoomIcon color="primary" />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    name="company"
-                    label="Compañía"
-                    variant="outlined"
-                    onChange={handleChange}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <BusinessIcon color="primary" />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Typography variant="h6">Rango de precio</Typography>
-                  <Box display="flex" justifyContent="space-between" mt={1}>
-                    <Typography>€{filters.cost_range[0]}</Typography>
-                    <Typography>€{filters.cost_range[1]}</Typography>
-                  </Box>
-                  <Slider
-                    value={filters.cost_range}
-                    onChange={handleChange}
-                    valueLabelDisplay="auto"
-                    min={0}
-                    max={5000}
-                    step={50}
-                    sx={{ color: "primary.main", mt: 2 }}
-                  />
-                </Grid>
-
-                <Grid item xs={12}>
-                  <FormControl component="fieldset">
-                    <Typography>
-                      <WifiIcon color="primary" /> WiFi
-                    </Typography>
-                    <RadioGroup row name="wifi" onChange={handleChange}>
-                      <FormControlLabel value="true" control={<Radio />} label="Sí" />
-                      <FormControlLabel value="false" control={<Radio />} label="No" />
-                    </RadioGroup>
-                  </FormControl>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <FormControl component="fieldset">
-                    <Typography>
-                      <PetsIcon color="primary" /> Mascotas
-                    </Typography>
-                    <RadioGroup row name="pets" onChange={handleChange}>
-                      <FormControlLabel value="true" control={<Radio />} label="Sí" />
-                      <FormControlLabel value="false" control={<Radio />} label="No" />
-                    </RadioGroup>
-                  </FormControl>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <FormControl component="fieldset">
-                    <Typography>
-                      <DirectionsCarIcon color="primary" /> Parking
-                    </Typography>
-                    <RadioGroup row name="parking" onChange={handleChange}>
-                      <FormControlLabel value="true" control={<Radio />} label="Sí" />
-                      <FormControlLabel value="false" control={<Radio />} label="No" />
-                    </RadioGroup>
-                  </FormControl>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <FormControl component="fieldset">
-                    <Typography>
-                      <SportsSoccerIcon color="primary" /> Deportes
-                    </Typography>
-                    <RadioGroup row name="sports" onChange={handleChange}>
-                      <FormControlLabel value="true" control={<Radio />} label="Sí" />
-                      <FormControlLabel value="false" control={<Radio />} label="No" />
-                    </RadioGroup>
-                  </FormControl>
-                </Grid>
-
-                <Grid item xs={12} textAlign="center">
-                  <Button variant="contained" color="primary" onClick={handleSearch} size="large">
-                    Buscar
-                  </Button>
-                </Grid>
+        <Card sx={{ boxShadow: 3, p: 3 }}>
+          <CardContent>
+            <Grid container spacing={3}>
+              {/* Fecha de llegada */}
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  name="arrival_day"
+                  type="date"
+                  label="Fecha de llegada"
+                  variant="outlined"
+                  onChange={handleChange}
+                  InputLabelProps={{ shrink: true }}
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start"><Hotel color="primary" /></InputAdornment>,
+                  }}
+                />
               </Grid>
-            </CardContent>
-          </Card>
-        </Box>
-      </Grid>
-    </Grid>
+
+              {/* Fecha de salida */}
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  name="departure_day"
+                  type="date"
+                  label="Fecha de salida"
+                  variant="outlined"
+                  onChange={handleChange}
+                  InputLabelProps={{ shrink: true }}
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start"><MeetingRoom color="primary" /></InputAdornment>,
+                  }}
+                />
+              </Grid>
+
+              {/* Nombre del hotel */}
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  name="company"
+                  label="Nombre del hotel"
+                  variant="outlined"
+                  onChange={handleChange}
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start"><Business color="primary" /></InputAdornment>,
+                  }}
+                />
+              </Grid>
+
+              {/* Rango de precio */}
+              <Grid item xs={12}>
+                <Typography>Precio: €{filters.cost_range?.[0] ?? 0} - €{filters.cost_range?.[1] ?? 400}</Typography>
+                <Slider
+                  value={filters.cost_range || [0, 400]}
+                  onChange={handleChange}
+                  valueLabelDisplay="auto"
+                  min={0}
+                  max={400}
+                  step={50}
+                  sx={{ mt: 2 }}
+                />
+              </Grid>
+
+              {/* Filtros adicionales */}
+              {[{
+                label: "WiFi", name: "wifi", icon: <Wifi color="primary" />
+              }, {
+                label: "Parking", name: "parking", icon: <DirectionsCar color="primary" />
+              }, {
+                label: "Deportes", name: "sports", icon: <SportsSoccer color="primary" />
+              }].map(({ label, name, icon }) => (
+                <Grid item xs={12} sm={6} key={name}>
+                  <FormControl component="fieldset">
+                    <Typography>{icon} {label}</Typography>
+                    <RadioGroup row name={name} onChange={handleChange}>
+                      <FormControlLabel value="true" control={<Radio />} label="Sí" />
+                      <FormControlLabel value="false" control={<Radio />} label="No" />
+                    </RadioGroup>
+                  </FormControl>
+                </Grid>
+              ))}
+            </Grid>
+          </CardContent>
+        </Card>
+      </Box>
+    </Box>
   );
 }
+
+export default HotelesBuscador;

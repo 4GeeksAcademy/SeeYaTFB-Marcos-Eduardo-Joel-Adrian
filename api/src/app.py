@@ -51,7 +51,6 @@ cloudinary.config(
 )
 
 jwt = JWTManager(app)
-# Handle/serialize errors like a JSON object
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
     return jsonify(error.to_dict()), error.status_code
@@ -63,7 +62,6 @@ def health_check():
     print(users)
     return jsonify({"status": "ok", "uptime": round(time.time() - start_time, 2)}), 200
 
-# generate sitemap with all your endpoints
 @app.route('/')
 def sitemap():
     return generate_sitemap(app)
@@ -95,7 +93,6 @@ def edit_user():
     if not data:
         return jsonify({"error": "Invalid input"}), 400
 
-    # Actualizar datos si están presentes en la petición
     existing_user.username = data.get("username", existing_user.username)
     existing_user.email = data.get("email", existing_user.email)
     existing_user.first_name = data.get("first_name", existing_user.first_name)

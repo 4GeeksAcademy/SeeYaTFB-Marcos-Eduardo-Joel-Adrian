@@ -33,9 +33,10 @@ const BuscadorCoches = ({ filters, setFilters }) => {
 
   return (
     <Box sx={{ width: "100%", p: 3 }}>
-      <Typography variant="h4" textAlign="center" gutterBottom>
-        Buscar Coches
-      </Typography>
+            <Typography variant="h2" textAlign="center" gutterBottom>
+              Buscar Coches
+            </Typography>
+      
 
       <Card sx={{ maxWidth: 600, mx: "auto", mt: 3 }}>
         <CardContent>
