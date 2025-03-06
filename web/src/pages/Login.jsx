@@ -8,24 +8,38 @@ import {
   Box,
   Paper,
   Avatar,
+  CircularProgress,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { UserContext } from "../context/User";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState(""); // Estado para el mensaje de error
-
   const { login } = useContext(UserContext);
+  const [credentials, setCredentials] = useState({ email: "", password: "" });
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    setCredentials({ ...credentials, [e.target.name]: e.target.value });
+  };
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    
+    setError(null);
+    setLoading(true);
+
+    if (!credentials.email || !credentials.password) {
+      setError("Por favor, completa todos los campos.");
+      setLoading(false);
+      return;
+    }
+
     try {
-      await login(email, password);
+      await login(credentials.email, credentials.password);
     } catch (error) {
-      setErrorMessage(error.message);
+      setError(error.message || "Error al iniciar sesión.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -40,7 +54,10 @@ const Login = () => {
         flexDirection: "column",
       }}
     >
-      <Typography variant="h3" sx={{ fontWeight: "bold", color: "white", mb: 8, textAlign: "center" }}>
+      <Typography
+        variant="h3"
+        sx={{ fontWeight: "bold", color: "white", mb: 8, textAlign: "center" }}
+      >
         ¡Regístrate para empezar a viajar! ✈️🌍
       </Typography>
 
@@ -62,8 +79,8 @@ const Login = () => {
               variant="outlined"
               margin="normal"
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={credentials.email}
+              onChange={handleChange}
             />
             <TextField
               fullWidth
@@ -73,13 +90,13 @@ const Login = () => {
               variant="outlined"
               margin="normal"
               required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={credentials.password}
+              onChange={handleChange}
             />
 
-            {errorMessage && (
+            {error && (
               <Typography color="error" sx={{ mt: 1, mb: 2 }}>
-                {errorMessage}
+                {error}
               </Typography>
             )}
 
@@ -89,8 +106,9 @@ const Login = () => {
               variant="contained"
               color="primary"
               sx={{ mt: 2, mb: 2 }}
+              disabled={loading}
             >
-              Ingresar
+              {loading ? <CircularProgress size={24} color="inherit" /> : "Ingresar"}
             </Button>
           </form>
 

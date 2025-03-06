@@ -116,7 +116,7 @@ export const UserProvider = ({ children }) => {
     })
     .then((res) => res.json())
     .then((data) => {
-      if (!data.success) {
+      if (!data.user) {
         throw new Error(data.error || "An error occurred while registering.");
       }
       return login(email, password); // Log the user in after registration

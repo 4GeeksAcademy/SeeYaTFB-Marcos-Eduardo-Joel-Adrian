@@ -1,14 +1,14 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo,useContext } from "react";
 import { Button, Card, CardContent, Input, Typography, CircularProgress, Alert, Chip } from "@mui/material";
 import { Wifi, LocalParking, Spa, SportsGolf, SportsTennis, Star } from "@mui/icons-material";
 import { baseUrl } from "../../services/api/config";
+import { FavoritesContext } from "../../context/Booking";
 
 
 const HotelesLista = () => {
   const [hotels, setHotels] = useState([]);
   const [search, setSearch] = useState("");
- 
-
+  const {addToFavorites}= useContext(FavoritesContext)
  useEffect(() => {
     fetch(
       `${baseUrl}/hotels`,
@@ -68,7 +68,11 @@ const HotelesLista = () => {
                   {hotel.sports && <Chip icon={<SportsTennis />} label="Sport" color="error" />}
                 </div>
 
-                <Button variant="contained" color="primary" className="mt-2">
+                <Button 
+                onClick={()=>
+                  addToFavorites(hotel.id,hotel.name,"Hotel")
+                }
+                variant="contained" color="primary" className="mt-2">
                   Reservar
                 </Button>
               </CardContent>
