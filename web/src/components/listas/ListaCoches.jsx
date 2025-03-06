@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useContext } from "react";
 import {
   Box, Typography, Grid, Card, CardContent, CardActions, Button, CircularProgress, Rating
 } from "@mui/material";
@@ -8,7 +8,10 @@ import LocalGasStationIcon from "@mui/icons-material/LocalGasStation";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
 import SecurityIcon from "@mui/icons-material/Security";
+
 import { baseUrl } from "../../services/api/config";
+import { FavoritesContext } from "../../context/Booking";
+
 
 const ListaCoches = ({ filters }) => {
   const [coches, setCoches] = useState([]);
@@ -98,6 +101,9 @@ const ListaCoches = ({ filters }) => {
                 </CardContent>
                 <CardActions>
                   <Button
+                  onClick={()=>{
+                    addToFavorites(coche.id,coche.name,"Car")
+                  }}
                     variant="contained"
                     sx={{ backgroundColor: "#2c387e", color: "white" }}
                     fullWidth

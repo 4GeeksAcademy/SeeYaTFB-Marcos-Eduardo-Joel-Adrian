@@ -1,16 +1,20 @@
-import { useState, useEffect, useMemo } from "react";
-import {
-  Button, Card, CardContent, Typography, CircularProgress, Chip, TextField, Box, Grid
-} from "@mui/material";
+import { useState, useEffect, useMemo,useContext } from "react";
+import { Button, Card, CardContent, Input, Typography, CircularProgress, Alert, Chip } from "@mui/material";
 import { Wifi, LocalParking, Spa, SportsGolf, SportsTennis, Star } from "@mui/icons-material";
 import { baseUrl } from "../../services/api/config";
+import { FavoritesContext } from "../../context/Booking";
 
 const HotelesLista = ({ filters }) => { // ✅ Ahora recibe los filtros correctamente
   const [hotels, setHotels] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch(`${baseUrl}/hotels`)
+  const [search, setSearch] = useState("");
+  const {addToFavorites}= useContext(FavoritesContext)
+ useEffect(() => {
+    fetch(
+      `${baseUrl}/hotels`,
+      {
+        method: "GET",
+      },
+    )
       .then((res) => res.json())
       .then((response) => {
         setHotels(response);
@@ -84,7 +88,9 @@ const HotelesLista = ({ filters }) => { // ✅ Ahora recibe los filtros correcta
                       {hotel.sports && <Chip icon={<SportsTennis />} label="Deportes" color="error" />}
                     </Box>
 
-                    <Button variant="contained" color="primary" sx={{ marginTop: 2, width: "100%" }}>
+                    <Button  onClick={()=>
+                      addToFavorites(hotel.id,hotel.name,"Hotel")
+                    } variant="contained" color="primary" sx={{ marginTop: 2, width: "100%" }}>
                       Reservar
                     </Button>
                   </CardContent>
