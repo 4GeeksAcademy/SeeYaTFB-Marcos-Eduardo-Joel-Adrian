@@ -5,11 +5,11 @@ import Button from "@mui/material/Button";
 import { useContext } from "react";
 import { UserContext } from "../context/User";
 import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-// Imágenes para cada carrusel
 const vuelosImages = [
   "https://res.cloudinary.com/duargmvav/image/upload/v1741204931/v5b4jvz6txlobq99tqvh.jpg",
   "https://res.cloudinary.com/duargmvav/image/upload/v1741204878/jlriou7zbsu4gstk4ijg.webp",
@@ -28,7 +28,6 @@ const cochesImages = [
   "https://res.cloudinary.com/duargmvav/image/upload/v1741205288/u8skwzgrpc726f7nlubo.jpg",
 ];
 
-// Configuración del carrusel
 const settings = {
   dots: true,
   infinite: true,
@@ -39,25 +38,25 @@ const settings = {
   autoplaySpeed: 3000,
 };
 
-// Componente de Carrusel Reutilizable
-const Carrusel = ({ images, title }) => (
+const Carrusel = ({ images, title, link }) => (
   <Box sx={{ maxWidth: 800, mx: "auto", mb: 5 }}>
-    <h2 style={{ textAlign: "center", fontSize: "2rem", marginBottom: "10px" }}>
-      {title}
-    </h2>
+    <h2 style={{ textAlign: "center", fontSize: "2rem", marginBottom: "10px" }}>{title}</h2>
     <Slider {...settings}>
       {images.map((image, index) => (
         <Box key={index} sx={{ textAlign: "center" }}>
-          <img
-            src={image}
-            alt={`${title} ${index + 1}`}
-            style={{
-              width: "100%",
-              maxHeight: "400px",
-              borderRadius: "8px",
-              objectFit: "cover",
-            }}
-          />
+          <Link to={link} style={{ textDecoration: "none" }}>
+            <img
+              src={image}
+              alt={`${title} ${index + 1}`}
+              style={{
+                width: "100%",
+                maxHeight: "400px",
+                borderRadius: "8px",
+                objectFit: "cover",
+                cursor: "pointer",
+              }}
+            />
+          </Link>
         </Box>
       ))}
     </Slider>
@@ -76,7 +75,6 @@ const Homepage = () => {
           <Grid item xs={5} sx={{ display: "flex", justifyContent: "flex-end" }}>
             <img src="/img/logosolo.png" alt="logo" style={{ width: "70%" }} />
           </Grid>
-
           <Grid item xs={6} sx={{ textAlign: "left", color: "white" }}>
             <h2 style={{ fontSize: "3rem", fontWeight: "bold" }}>
               Bienvenido {user.username || "a Seeya!"}
@@ -90,9 +88,9 @@ const Homepage = () => {
 
       {/* Sección de carruseles */}
       <Container sx={{ bgcolor: "white", maxWidth: "100% !important", padding: 5 }}>
-        <Carrusel images={vuelosImages} title="Vuelos" />
-        <Carrusel images={hotelesImages} title="Hoteles" />
-        <Carrusel images={cochesImages} title="Coches" />
+        <Carrusel images={vuelosImages} title="Vuelos" link="/flights" />
+        <Carrusel images={hotelesImages} title="Hoteles" link="/hotels" />
+        <Carrusel images={cochesImages} title="Coches" link="/cars" />
       </Container>
 
       {/* Sección de registro */}
